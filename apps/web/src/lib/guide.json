@@ -15,6 +15,7 @@
         "Không thấy file hoặc file ghi \"ĐANG KHỞI ĐỘNG\" quá lâu: mở Terminal (☰ > Terminal > New Terminal), chạy `bash .devcontainer/start.sh` và chờ dòng \"Đăng nhập OmniTest\" in ra."
       ],
       "tips": [
+        "Lệnh khởi động bị dừng hoặc file ghi **LỖI**: chạy lại `bash .devcontainer/start.sh` (codespace tạo trước 16/10/2026 thì chạy `git pull` trước). Build chạy nền, Ctrl+C không dừng build; xem tiến trình bằng `tail -f omnitest-khoi-dong.log`.",
         "Mật khẩu sinh ngẫu nhiên cho từng codespace và không được đưa lên GitHub.",
         "Cổng 8080 để chế độ Private: chỉ tài khoản GitHub của bạn mở được.",
         "Dừng codespace khi không dùng để tiết kiệm hạn mức miễn phí."

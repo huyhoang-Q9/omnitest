@@ -49,6 +49,7 @@ _Chạy toàn bộ hệ thống trong trình duyệt, không cần cài đặt g
 
 > **Lưu ý**
 >
+> - Lệnh khởi động bị dừng hoặc file ghi **LỖI**: chạy lại `bash .devcontainer/start.sh` (codespace tạo trước 16/10/2026 thì chạy `git pull` trước). Build chạy nền, Ctrl+C không dừng build; xem tiến trình bằng `tail -f omnitest-khoi-dong.log`.
 > - Mật khẩu sinh ngẫu nhiên cho từng codespace và không được đưa lên GitHub.
 > - Cổng 8080 để chế độ Private: chỉ tài khoản GitHub của bạn mở được.
 > - Dừng codespace khi không dùng để tiết kiệm hạn mức miễn phí.

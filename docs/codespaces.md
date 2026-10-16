@@ -20,7 +20,16 @@ Không thấy file hoặc file vẫn ghi "ĐANG KHỞI ĐỘNG" quá lâu: mở 
 bash .devcontainer/start.sh
 ```
 
-Lệnh chạy lại nhiều lần vẫn an toàn và in Email, Mật khẩu ở cuối. Nếu báo lỗi, gửi vài dòng cuối cho đội phát triển.
+Lệnh chạy lại nhiều lần vẫn an toàn và in Email, Mật khẩu ở cuối.
+
+## Khi lệnh khởi động dừng giữa chừng
+
+- Build chạy nền và ghi log vào `omnitest-khoi-dong.log`. Đóng terminal hoặc bấm Ctrl+C chỉ dừng phần theo dõi,
+  build vẫn chạy tiếp. Xem lại tiến trình bằng `tail -f omnitest-khoi-dong.log`.
+- Nếu có lỗi, script in rõ **LỖI ở bước: ...** cùng trạng thái và log các dịch vụ, đồng thời ghi lỗi vào dòng đầu
+  `omnitest-dang-nhap.txt`. Chạy lại `bash .devcontainer/start.sh` (lỗi mạng tạm thời thường tự hết khi chạy lại).
+- Codespace tạo trước ngày 16/10/2026 dùng script cũ: chạy `git pull` rồi chạy lại lệnh trên.
+- Vẫn lỗi: gửi kết quả của `tail -n 30 omnitest-khoi-dong.log` cho đội phát triển.
 
 ## Thử kiểm thử
 

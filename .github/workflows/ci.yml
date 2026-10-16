@@ -122,6 +122,18 @@ jobs:
           PY
       - name: Chạy lại script (codespace khởi động lại) không lỗi, không tạo trùng
         run: bash .devcontainer/start.sh
+      - name: Hai lần chạy cùng lúc không build trùng, cả hai đều báo sẵn sàng
+        run: |
+          bash .devcontainer/start.sh > a.out 2>&1 & A=$!
+          sleep 1
+          bash .devcontainer/start.sh > b.out 2>&1
+          wait $A
+          cat a.out b.out
+          grep -q "Đang có lần khởi động khác chạy nền" b.out
+          grep -q "(sẵn sàng)" a.out && grep -q "(sẵn sàng)" b.out
+      - name: Log khởi động khi lỗi
+        if: failure()
+        run: tail -n 200 omnitest-khoi-dong.log || true
       - name: Dọn
         if: always()
         run: docker compose -f infra/docker/compose.yaml --env-file .env.codespaces down -v
