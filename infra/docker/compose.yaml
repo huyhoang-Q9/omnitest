@@ -70,7 +70,8 @@ services:
       api:
         condition: service_started
     read_only: true
-    tmpfs: [/tmp, /home/omnitest]
+    # HOME trên tmpfs phải thuộc user omnitest (10001), nếu không asyncpg lỗi quyền khi dò ~/.postgresql.
+    tmpfs: [/tmp, "/home/omnitest:uid=10001,gid=10001,mode=0700"]
     shm_size: 512m
     security_opt: ["no-new-privileges:true"]
 

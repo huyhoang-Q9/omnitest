@@ -31,6 +31,8 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          # Job này không dùng pnpm: tắt cache tự động theo packageManager (pnpm chưa được cài ở đây).
+          package-manager-cache: false
       - name: Cài Appium và driver fake (kiểm chứng giao thức adapter Desktop/Mobile)
         run: |
           mkdir -p "$RUNNER_TEMP/appium" && cd "$RUNNER_TEMP/appium"
