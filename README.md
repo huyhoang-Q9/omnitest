@@ -3,13 +3,12 @@
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 
-Trạng thái hiện tại: **Giai đoạn 6** (adapter Desktop/Mobile qua Appium ở mức thử nghiệm: Android, iOS, macOS,
-Windows; trình soạn bước trên web), trên nền Giai đoạn 5 (Trợ lý AI tùy chọn, tắt mặc định: đề xuất test case, phân tích lỗi, người
-dùng duyệt mới lưu), trên nền Giai đoạn 4 (báo cáo HTML/CSV/Excel theo lần chạy và tổng hợp dự án, sinh test API từ
-OpenAPI, bộ test bảo mật SSRF/IDOR/upload), trên nền Giai đoạn 3 (test case, suite, chạy test API bằng HTTPX và Web
-bằng Playwright qua worker Dramatiq, kết quả từng bước, ảnh chụp, trace, dashboard) và Giai đoạn 2 (đăng nhập, phân
-quyền, dự án, môi trường, biến secret, audit). Kế hoạch tổng thể: [docs/ke-hoach-mvp.md](docs/ke-hoach-mvp.md). Báo cáo giai đoạn:
-[docs/phases](docs/phases).
+Trạng thái hiện tại: **MVP hoàn thành Giai đoạn 1 đến 7**, CI xanh (lint, type check, pytest, build web, chạy thử
+stack Docker Compose kèm sandbox). Gồm: đăng nhập, phân quyền, dự án, môi trường, biến secret, audit; test case, suite,
+chạy test API (HTTPX) và Web (Playwright) qua worker Dramatiq; script code pytest trong sandbox Docker; báo cáo
+HTML/CSV/Excel; import OpenAPI; Trợ lý AI tùy chọn; adapter Desktop/Mobile qua Appium (thử nghiệm). Báo cáo nghiệm
+thu: [docs/nghiem-thu.md](docs/nghiem-thu.md). Kế hoạch: [docs/ke-hoach-mvp.md](docs/ke-hoach-mvp.md). Báo cáo từng
+giai đoạn: [docs/phases](docs/phases).
 
 ## Cấu trúc
 
@@ -60,7 +59,8 @@ docker compose -f infra/docker/compose.yaml --env-file .env up --build
 docker compose -f infra/docker/compose.yaml --env-file .env exec api omnitest-api create-admin --email admin@congty.vn
 ```
 
-Giao diện: http://127.0.0.1:8080. Dự án demo trong Compose:
+Giao diện: http://127.0.0.1:8080. Bật sandbox script code và chạy kiểm tra khói: xem
+[docs/phases/phase-7.md](docs/phases/phase-7.md#6-hướng-dẫn-chạy). Dự án demo trong Compose:
 `... exec api omnitest-api seed-demo --owner-email admin@congty.vn --base-url http://demo:8100`.
 
 ## Trợ lý AI (tùy chọn)
