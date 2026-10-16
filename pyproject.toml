@@ -3,7 +3,7 @@ name = "omnitest"
 version = "0.1.0"
 description = "OmniTest Automation Platform (monorepo root)"
 requires-python = ">=3.12"
-dependencies = ["omnitest-api", "omnitest-adapters", "omnitest-worker", "omnitest-demo-target"]
+dependencies = ["omnitest-api", "omnitest-adapters", "omnitest-worker", "omnitest-demo-target", "omnitest-ai"]
 
 [tool.uv]
 package = false
@@ -13,9 +13,10 @@ omnitest-api = { workspace = true }
 omnitest-adapters = { workspace = true }
 omnitest-worker = { workspace = true }
 omnitest-demo-target = { workspace = true }
+omnitest-ai = { workspace = true }
 
 [tool.uv.workspace]
-members = ["apps/api", "apps/worker", "apps/demo-target", "adapters"]
+members = ["apps/api", "apps/worker", "apps/demo-target", "adapters", "ai"]
 
 [dependency-groups]
 dev = [
@@ -52,8 +53,8 @@ norecursedirs = ["tests/e2e"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = "apps/api/src:adapters/src:apps/worker/src"
-packages = ["omnitest_api", "omnitest_adapters", "omnitest_worker"]
+mypy_path = "apps/api/src:adapters/src:apps/worker/src:ai/src"
+packages = ["omnitest_api", "omnitest_adapters", "omnitest_worker", "omnitest_ai"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["omnitest_api", "tests"]

@@ -3,7 +3,8 @@
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 
-Trạng thái hiện tại: **Giai đoạn 4** (báo cáo HTML/CSV/Excel theo lần chạy và tổng hợp dự án, sinh test API từ
+Trạng thái hiện tại: **Giai đoạn 5** (Trợ lý AI tùy chọn, tắt mặc định: đề xuất test case, phân tích lỗi, người
+dùng duyệt mới lưu), trên nền Giai đoạn 4 (báo cáo HTML/CSV/Excel theo lần chạy và tổng hợp dự án, sinh test API từ
 OpenAPI, bộ test bảo mật SSRF/IDOR/upload), trên nền Giai đoạn 3 (test case, suite, chạy test API bằng HTTPX và Web
 bằng Playwright qua worker Dramatiq, kết quả từng bước, ảnh chụp, trace, dashboard) và Giai đoạn 2 (đăng nhập, phân
 quyền, dự án, môi trường, biến secret, audit). Kế hoạch tổng thể: [docs/ke-hoach-mvp.md](docs/ke-hoach-mvp.md). Báo cáo giai đoạn:
@@ -16,6 +17,7 @@ apps/api          FastAPI + SQLAlchemy + Alembic (migrations trong apps/api/migr
 apps/worker       Worker Dramatiq: nhận lần chạy từ Redis, gọi adapter, lưu kết quả và bằng chứng
 apps/demo-target  Ứng dụng demo "Kho hàng mini" làm đích cho bộ test mẫu (không dùng production)
 adapters          Adapter API (HTTPX), Web (Playwright); Desktop/Mobile mới là khung, chạy sẽ báo "Bị chặn"
+ai                Lớp AI tùy chọn: provider Anthropic/OpenAI-compatible, đề xuất test case, phân tích lỗi
 apps/web          React + TypeScript + Vite + Tailwind (thành phần theo phong cách shadcn/ui)
 packages/contracts  OpenAPI sinh từ Pydantic, nguồn type TypeScript cho web
 infra/docker      Dockerfile, nginx, Docker Compose
@@ -24,7 +26,7 @@ tests/            unit, integration, security (pytest, PostgreSQL thật), e2e (
 docs/             kế hoạch, báo cáo từng giai đoạn
 ```
 
-Các thư mục `ai/*`, `packages/test-sdk` được tạo ở giai đoạn tương ứng.
+Thư mục `packages/test-sdk` dành cho script code (chưa làm, cần sandbox).
 
 ## Yêu cầu
 
@@ -59,6 +61,16 @@ docker compose -f infra/docker/compose.yaml --env-file .env exec api omnitest-ap
 
 Giao diện: http://127.0.0.1:8080. Dự án demo trong Compose:
 `... exec api omnitest-api seed-demo --owner-email admin@congty.vn --base-url http://demo:8100`.
+
+## Trợ lý AI (tùy chọn)
+
+Tắt mặc định. Bật bằng `OMNITEST_AI_PROVIDER` (`anthropic` hoặc `openai_compatible`), `OMNITEST_AI_API_KEY`,
+`OMNITEST_AI_MODEL`, `OMNITEST_AI_BASE_URL` (xem `.env.example`). Sau đó Admin từng dự án phải bật AI cho dự án.
+AI chỉ đề xuất; không có quyền ghi dữ liệu, chạy test hay chạy lệnh.
+
+E2E giao diện AI dùng test double (không phải AI thật):
+`uv run uvicorn tests.e2e.fake_llm:app --port 8199` rồi khởi động API với
+`OMNITEST_AI_PROVIDER=openai_compatible OMNITEST_AI_BASE_URL=http://127.0.0.1:8199/v1`.
 
 ## Kiểm thử
 

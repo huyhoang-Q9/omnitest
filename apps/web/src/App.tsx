@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AppLayout } from "@/components/app-layout";
+import { AIAssistantPage } from "@/pages/AIAssistantPage";
 import { ErrorState, LoadingState } from "@/components/states";
 import { useMe } from "@/hooks/auth";
 import { ComingSoonPage } from "@/pages/ComingSoonPage";
@@ -37,9 +38,7 @@ function RequireAuth() {
   return <AppLayout />;
 }
 
-const PLANNED = [
-  { path: "/ai", title: "Trợ lý AI", phase: "Giai đoạn 5", description: "Đề xuất test case, sinh script nháp và phân tích lỗi; luôn cần người dùng duyệt." },
-];
+const PLANNED: { path: string; title: string; phase: string; description: string }[] = [];
 
 export default function App() {
   return (
@@ -60,6 +59,7 @@ export default function App() {
         <Route path="test-runs/:runId" element={<RunDetailPage />} />
         <Route path="live" element={<LivePage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="ai" element={<AIAssistantPage />} />
         <Route path="settings" element={<SettingsPage />} />
         {PLANNED.map((p) => (
           <Route key={p.path} path={p.path.slice(1)} element={<ComingSoonPage {...p} />} />

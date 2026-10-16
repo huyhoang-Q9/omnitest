@@ -28,7 +28,7 @@ export function RunProgress({ run }: { run: Run }) {
         <div className="bg-status-cancelled" style={{ width: pct(run.cancelled) }} />
       </div>
       <p className="text-xs tabular-nums text-muted-foreground">
-        {done}/{run.total} xong · {run.passed} đạt · {run.failed + run.errored} lỗi
+        {done}/{run.total} xong · {run.passed} đạt · {run.failed + run.errored} không đạt, lỗi
         {run.blocked > 0 && ` · ${run.blocked} bị chặn`}
         {run.cancelled > 0 && ` · ${run.cancelled} đã hủy`}
       </p>

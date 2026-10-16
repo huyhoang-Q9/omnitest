@@ -11,6 +11,7 @@ resolution-markers = [
 members = [
     "omnitest",
     "omnitest-adapters",
+    "omnitest-ai",
     "omnitest-api",
     "omnitest-demo-target",
     "omnitest-worker",
@@ -1005,6 +1006,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "omnitest-adapters" },
+    { name = "omnitest-ai" },
     { name = "omnitest-api" },
     { name = "omnitest-demo-target" },
     { name = "omnitest-worker" },
@@ -1025,6 +1027,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "omnitest-adapters", editable = "adapters" },
+    { name = "omnitest-ai", editable = "ai" },
     { name = "omnitest-api", editable = "apps/api" },
     { name = "omnitest-demo-target", editable = "apps/demo-target" },
     { name = "omnitest-worker", editable = "apps/worker" },
@@ -1064,6 +1067,23 @@ requires-dist = [
 ]
 
 [[package]]
+name = "omnitest-ai"
+version = "0.1.0"
+source = { editable = "ai" }
+dependencies = [
+    { name = "httpx" },
+    { name = "omnitest-adapters" },
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "httpx", specifier = ">=0.27" },
+    { name = "omnitest-adapters", editable = "adapters" },
+    { name = "pydantic", specifier = ">=2.9" },
+]
+
+[[package]]
 name = "omnitest-api"
 version = "0.1.0"
 source = { editable = "apps/api" }
@@ -1076,6 +1096,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
     { name = "omnitest-adapters" },
+    { name = "omnitest-ai" },
     { name = "openpyxl" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -1094,6 +1115,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "omnitest-adapters", editable = "adapters" },
+    { name = "omnitest-ai", editable = "ai" },
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pydantic", specifier = ">=2.9" },
     { name = "pydantic-settings", specifier = ">=2.6" },

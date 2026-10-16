@@ -8,8 +8,10 @@ import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnalyzeFailure } from "@/features/ai";
+import { useAIStatus } from "@/hooks/ai";
 import { CancelRunButton, RunProgress } from "@/features/runs";
-import { api, type Artifact, type RunDetail, type RunItem, type RunItemDetail, type StepResult } from "@/lib/api";
+import { api, can, type Artifact, type Project, type RunDetail, type RunItem, type RunItemDetail, type StepResult } from "@/lib/api";
 import { isActive } from "@/lib/status";
 import { ERROR_TYPE_LABEL, formatBytes, formatDuration, TEST_TYPE_LABEL } from "@/lib/test-labels";
 import { cn, formatDateTime } from "@/lib/utils";
@@ -89,7 +91,7 @@ function StepRow({ step, artifacts }: { step: StepResult; artifacts: Artifact[] 
   );
 }
 
-function ItemDetail({ item, live }: { item: RunItem; live: boolean }) {
+function ItemDetail({ item, live, aiEnabled }: { item: RunItem; live: boolean; aiEnabled: boolean }) {
   const q = useQuery({
     queryKey: ["run-item", item.id, item.status],
     queryFn: () => api<RunItemDetail>(`/api/run-items/${item.id}`),
@@ -109,6 +111,7 @@ function ItemDetail({ item, live }: { item: RunItem; live: boolean }) {
           <p className="whitespace-pre-wrap">{d.error}</p>
         </div>
       )}
+      {["failed", "error", "blocked"].includes(d.status) && <AnalyzeFailure key={d.id} itemId={d.id} enabled={aiEnabled} />}
       {d.steps.length === 0 && !isActive(d.status) && <p className="text-sm text-muted-foreground">Không có bước nào được thực thi.</p>}
       {attempts.map((a) => (
         <div key={a} className="grid gap-2">
@@ -135,9 +138,16 @@ export function RunDetailPage() {
     queryFn: () => api<RunDetail>(`/api/runs/${runId}`),
     refetchInterval: (query) => (query.state.data && isActive(query.state.data.status) ? 2000 : false),
   });
+  const project = useQuery({
+    queryKey: ["project", q.data?.project_id],
+    enabled: !!q.data,
+    queryFn: () => api<Project>(`/api/projects/${q.data?.project_id}`),
+  });
+  const aiStatus = useAIStatus();
   if (q.isPending) return <LoadingState rows={6} />;
   if (q.isError) return <ErrorState message={q.error.message} onRetry={() => q.refetch()} />;
   const run = q.data;
+  const aiEnabled = !!aiStatus.data?.configured && !!project.data?.ai_enabled && can(project.data?.my_role, "tester");
   const live = isActive(run.status);
   const selected = openItem ?? run.items.find((i) => i.status !== "passed" && !isActive(i.status))?.id ?? null;
 
@@ -231,7 +241,7 @@ export function RunDetailPage() {
                   </button>
                   {isOpen && (
                     <div className="border-t p-3">
-                      <ItemDetail item={item} live={live} />
+                      <ItemDetail item={item} live={live} aiEnabled={aiEnabled} />
                     </div>
                   )}
                 </div>

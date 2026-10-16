@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -36,6 +37,15 @@ class Settings(BaseSettings):
     stale_run_minutes: int = 15
     # Múi giờ dùng để gom số liệu theo ngày trên dashboard.
     display_timezone: str = "Asia/Ho_Chi_Minh"
+
+    # AI (tùy chọn, tắt mặc định). "none" | "anthropic" | "openai_compatible".
+    # Khóa chỉ đặt qua biến môi trường/secret của máy chủ, không bao giờ trả về client hay ghi log.
+    ai_provider: Literal["none", "anthropic", "openai_compatible"] = "none"
+    ai_api_key: SecretStr | None = None
+    ai_model: str = "claude-sonnet-5-5"
+    ai_base_url: str | None = None
+    ai_timeout_seconds: float = 60
+    ai_max_output_tokens: int = 4096
 
     @field_validator("env")
     @classmethod

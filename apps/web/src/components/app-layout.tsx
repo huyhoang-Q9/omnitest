@@ -41,7 +41,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { to: "/test-runs", key: "testRuns", icon: PlayCircle },
       { to: "/live", key: "liveExecution", icon: Radio },
       { to: "/reports", key: "reports", icon: FileBarChart },
-      { to: "/ai", key: "aiAssistant", icon: Bot, phase: "GĐ5" },
+      { to: "/ai", key: "aiAssistant", icon: Bot },
     ],
   },
   { group: "groupSystem", items: [{ to: "/settings", key: "settings", icon: Settings }] },

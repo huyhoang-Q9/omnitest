@@ -41,6 +41,11 @@ services:
       OMNITEST_MASTER_KEY: ${OMNITEST_MASTER_KEY:?Cần đặt OMNITEST_MASTER_KEY trong .env}
       OMNITEST_COOKIE_SECURE: ${OMNITEST_COOKIE_SECURE:-false}
       OMNITEST_ARTIFACTS_DIR: /data/artifacts
+      # AI tùy chọn, tắt mặc định
+      OMNITEST_AI_PROVIDER: ${OMNITEST_AI_PROVIDER:-none}
+      OMNITEST_AI_API_KEY: ${OMNITEST_AI_API_KEY:-}
+      OMNITEST_AI_MODEL: ${OMNITEST_AI_MODEL:-claude-sonnet-5-5}
+      OMNITEST_AI_BASE_URL: ${OMNITEST_AI_BASE_URL:-}
     volumes:
       - artifacts:/data/artifacts
     depends_on:

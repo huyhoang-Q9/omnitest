@@ -15,6 +15,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    false,
     func,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -99,6 +100,8 @@ class Project(TimestampMixin, Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
     is_archived: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Cho phép gửi dữ liệu của dự án (yêu cầu, log lỗi đã che secret) tới nhà cung cấp AI. Admin dự án bật.
+    ai_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
     created_by_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL")
     )

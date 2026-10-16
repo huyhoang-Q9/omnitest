@@ -2863,6 +2863,123 @@
         }
       }
     },
+    "/api/ai/status": {
+      "get": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Ai Status",
+        "operationId": "ai_status_api_ai_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AIStatusOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{project_id}/ai/suggest-test-cases": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Ai Suggest Test Cases",
+        "operationId": "ai_suggest_test_cases_api_projects__project_id__ai_suggest_test_cases_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuggestionResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/run-items/{item_id}/ai/analyze": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Ai Analyze Failure",
+        "operationId": "ai_analyze_failure_api_run_items__item_id__ai_analyze_post",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureAnalysisResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/health": {
       "get": {
         "tags": [
@@ -2891,6 +3008,36 @@
   },
   "components": {
     "schemas": {
+      "AIStatusOut": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "configured",
+          "provider",
+          "model"
+        ],
+        "title": "AIStatusOut"
+      },
       "AdapterOut": {
         "properties": {
           "key": {
@@ -3749,6 +3896,106 @@
         ],
         "title": "DashboardOut"
       },
+      "Draft": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Description",
+            "default": ""
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Priority",
+            "default": "medium"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Tags"
+          },
+          "preconditions": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Preconditions",
+            "default": ""
+          },
+          "expected_result": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Expected Result",
+            "default": ""
+          },
+          "definition": {
+            "title": "Definition"
+          },
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Assumptions"
+          },
+          "uncertainty": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Uncertainty",
+            "default": "medium"
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Rationale",
+            "default": ""
+          },
+          "test_type": {
+            "type": "string",
+            "enum": [
+              "api",
+              "web"
+            ],
+            "title": "Test Type"
+          },
+          "valid": {
+            "type": "boolean",
+            "title": "Valid"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Errors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "test_type",
+          "valid"
+        ],
+        "title": "Draft"
+      },
       "EnvironmentCreate": {
         "properties": {
           "name": {
@@ -4005,6 +4252,101 @@
           "expression"
         ],
         "title": "Extract"
+      },
+      "FailureAnalysisResult": {
+        "properties": {
+          "summary": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Summary"
+          },
+          "probable_cause": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Probable Cause"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "test_script",
+              "application",
+              "environment",
+              "test_data",
+              "unknown"
+            ],
+            "title": "Category"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence"
+          },
+          "evidence": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Evidence"
+          },
+          "suggestions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Suggestions"
+          },
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Assumptions"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tokens"
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary",
+          "probable_cause",
+          "category",
+          "confidence",
+          "model",
+          "input_tokens",
+          "output_tokens"
+        ],
+        "title": "FailureAnalysisResult"
       },
       "GroupStat": {
         "properties": {
@@ -4498,6 +4840,11 @@
             "type": "boolean",
             "title": "Is Archived"
           },
+          "ai_enabled": {
+            "type": "boolean",
+            "title": "Ai Enabled",
+            "default": false
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -4672,6 +5019,17 @@
               }
             ],
             "title": "Description"
+          },
+          "ai_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Enabled"
           }
         },
         "type": "object",
@@ -5561,6 +5919,90 @@
           "details"
         ],
         "title": "StepResultOut"
+      },
+      "SuggestIn": {
+        "properties": {
+          "requirement": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 10,
+            "title": "Requirement"
+          },
+          "test_type": {
+            "type": "string",
+            "enum": [
+              "api",
+              "web"
+            ],
+            "title": "Test Type",
+            "default": "api"
+          },
+          "count": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Count",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "required": [
+          "requirement"
+        ],
+        "title": "SuggestIn"
+      },
+      "SuggestionResult": {
+        "properties": {
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Assumptions"
+          },
+          "drafts": {
+            "items": {
+              "$ref": "#/components/schemas/Draft"
+            },
+            "type": "array",
+            "title": "Drafts"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tokens"
+          }
+        },
+        "type": "object",
+        "required": [
+          "assumptions",
+          "drafts",
+          "model",
+          "input_tokens",
+          "output_tokens"
+        ],
+        "title": "SuggestionResult"
       },
       "SuiteCaseOut": {
         "properties": {

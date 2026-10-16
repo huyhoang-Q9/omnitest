@@ -11,8 +11,9 @@ COPY apps/api/pyproject.toml apps/api/pyproject.toml
 COPY apps/worker/pyproject.toml apps/worker/pyproject.toml
 COPY apps/demo-target/pyproject.toml apps/demo-target/pyproject.toml
 COPY adapters/pyproject.toml adapters/pyproject.toml
+COPY ai/pyproject.toml ai/pyproject.toml
 RUN for p in apps/api/src/omnitest_api apps/worker/src/omnitest_worker \
-        apps/demo-target/src/omnitest_demo_target adapters/src/omnitest_adapters; do \
+        apps/demo-target/src/omnitest_demo_target adapters/src/omnitest_adapters ai/src/omnitest_ai; do \
         mkdir -p "$p" && touch "$p/__init__.py"; done \
     && uv sync --frozen --no-dev --no-install-workspace
 
@@ -20,6 +21,7 @@ COPY apps/api apps/api
 COPY apps/worker apps/worker
 COPY apps/demo-target apps/demo-target
 COPY adapters adapters
+COPY ai ai
 RUN uv sync --frozen --no-dev
 ENV PATH="/app/.venv/bin:$PATH"
 RUN useradd --system --uid 10001 --create-home omnitest \

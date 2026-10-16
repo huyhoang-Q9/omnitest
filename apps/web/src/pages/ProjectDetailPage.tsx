@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
+import { ProjectAIToggle } from "@/features/ai";
 import { AuditPanel } from "@/features/audit";
 import { EnvironmentFormDialog, EnvironmentsTable } from "@/features/environments";
 import { MembersPanel } from "@/features/members";
@@ -146,6 +147,7 @@ export function ProjectDetailPage() {
       <p className="-mt-3 mb-5 text-sm text-muted-foreground">
         Vai trò của bạn: <span className="font-medium text-foreground">{role ? ROLE_LABEL[role] : "Không rõ"}</span>
       </p>
+      <ProjectAIToggle project={p} canEdit={can(role, "admin")} />
       {p.is_archived && (
         <div role="status" className="mb-4 rounded-lg border border-status-blocked/30 bg-status-blocked/10 px-4 py-3 text-sm">
           Dự án đang lưu trữ nên chỉ xem được. Admin có thể khôi phục để chỉnh sửa tiếp.

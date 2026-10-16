@@ -10,6 +10,7 @@ from starlette.responses import Response
 
 from omnitest_api.config import get_settings
 from omnitest_api.routers import (
+    ai,
     auth,
     dashboard,
     environments,
@@ -78,6 +79,7 @@ def create_app() -> FastAPI:
         suites.router,
         runs.router,
         reports.router,
+        ai.router,
     ):
         app.include_router(r)
 

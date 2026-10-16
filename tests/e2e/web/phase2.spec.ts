@@ -81,8 +81,10 @@ test("luồng chính: dự án, môi trường, biến secret, lưu trữ", asyn
   await page.screenshot({ path: `${shots}/${info.project.name}-project.png`, fullPage: true });
 });
 
-test("chức năng chưa có hiển thị rõ là chưa hỗ trợ", async ({ page }) => {
+test("AI chưa cấu hình hiển thị rõ, không giả lập kết quả", async ({ page }) => {
   await login(page);
+  const status = await (await page.request.get("/api/ai/status")).json();
+  test.skip(status.configured, "API đang chạy với AI được cấu hình");
   await page.goto("/ai");
-  await expect(page.getByText("Chức năng này có từ Giai đoạn 5")).toBeVisible();
+  await expect(page.getByText("AI chưa được cấu hình")).toBeVisible();
 });
