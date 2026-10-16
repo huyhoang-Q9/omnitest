@@ -1,0 +1,60 @@
+# Môi trường phát triển bằng Docker Compose.
+#   cp .env.example .env   (điền OMNITEST_MASTER_KEY, POSTGRES_PASSWORD)
+#   docker compose -f infra/docker/compose.yaml --env-file .env up --build
+# Worker (Dramatiq) được thêm ở Giai đoạn 3.
+name: omnitest
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: omnitest
+      POSTGRES_USER: omnitest
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Cần đặt POSTGRES_PASSWORD trong .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnitest -d omnitest"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/api.Dockerfile
+    environment:
+      OMNITEST_ENV: ${OMNITEST_ENV:-development}
+      OMNITEST_DATABASE_URL: postgresql+asyncpg://omnitest:${POSTGRES_PASSWORD}@postgres:5432/omnitest
+      OMNITEST_REDIS_URL: redis://redis:6379/0
+      OMNITEST_MASTER_KEY: ${OMNITEST_MASTER_KEY:?Cần đặt OMNITEST_MASTER_KEY trong .env}
+      OMNITEST_COOKIE_SECURE: ${OMNITEST_COOKIE_SECURE:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/docker/web.Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on: [api]
+
+volumes:
+  pgdata:
+  redisdata:

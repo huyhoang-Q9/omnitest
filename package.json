@@ -1,0 +1,11 @@
+{
+  "name": "omnitest",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "web:dev": "pnpm --filter @omnitest/web dev",
+    "web:build": "pnpm --filter @omnitest/web build",
+    "web:test": "pnpm --filter @omnitest/web test",
+    "web:lint": "pnpm --filter @omnitest/web lint"
+  }
+}

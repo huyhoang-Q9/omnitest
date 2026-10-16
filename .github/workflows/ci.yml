@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: omnitest
+          POSTGRES_PASSWORD: omnitest
+          POSTGRES_DB: omnitest_test
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U omnitest" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run mypy
+      - run: uv run pytest -q
+        env:
+          OMNITEST_TEST_DATABASE_URL: postgresql+asyncpg://omnitest:omnitest@127.0.0.1:5432/omnitest_test
+      - name: Contract OpenAPI không lệch
+        run: |
+          uv run python infra/scripts/export_openapi.py
+          git diff --exit-code packages/contracts/openapi.json
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @omnitest/web lint
+      - run: pnpm --filter @omnitest/web typecheck
+      - run: pnpm --filter @omnitest/web test
+      - run: pnpm --filter @omnitest/web exec vite build
