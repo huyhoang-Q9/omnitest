@@ -52,7 +52,7 @@ Lỗi thật phát hiện nhờ E2E và đã sửa: đăng nhập bằng email t
 ## 5. Tồn tại
 
 - Docker Compose và image chưa được build thử (thiếu Docker daemon). Cần chạy trên máy Mac hoặc CI.
-- CI GitHub Actions đã viết nhưng chưa chạy lần nào.
+- CI GitHub Actions chạy xanh lần đầu trên commit d89da42 (backend và frontend); còn cảnh báo action dùng Node 20 sắp ngừng hỗ trợ, nâng phiên bản action ở Giai đoạn 7.
 - oxlint còn 2 cảnh báo `incompatible-library` do `form.watch()` của react-hook-form với React Compiler;
   không ảnh hưởng chức năng.
 - Bundle web khoảng 650 KB (chưa chia nhỏ theo route); sẽ lazy-load ở Giai đoạn 7.
