@@ -1,12 +1,14 @@
 import type { Translation } from "./vi";
 
 export const en: Translation = {
-  app: { name: "OmniTest", tagline: "Test automation platform" },
+  app: { name: "OmniTest", tagline: "Test automation portal" },
   nav: {
-    groupOverview: "Overview",
-    groupTesting: "Testing",
-    groupSystem: "System",
-    dashboard: "Dashboard",
+    groupPortal: "Testing portal",
+    groupDesign: "Test design",
+    groupManage: "Management",
+    home: "Home",
+    runTest: "Test a system",
+    dashboard: "Metrics overview",
     projects: "Projects",
     environments: "Environments",
     testCases: "Test cases",

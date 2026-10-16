@@ -3,6 +3,7 @@ import {
   ClipboardList,
   FileBarChart,
   FolderKanban,
+  Home,
   Layers,
   LayoutDashboard,
   ListChecks,
@@ -13,6 +14,7 @@ import {
   Server,
   Settings,
   X,
+  Zap,
 } from "lucide-react";
 import { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,25 +29,32 @@ type NavItem = { to: string; key: string; icon: typeof LayoutDashboard; phase?: 
 
 const NAV: { group: string; items: NavItem[] }[] = [
   {
-    group: "groupOverview",
+    group: "groupPortal",
     items: [
-      { to: "/", key: "dashboard", icon: LayoutDashboard },
-      { to: "/projects", key: "projects", icon: FolderKanban },
-      { to: "/environments", key: "environments", icon: Server },
-    ],
-  },
-  {
-    group: "groupTesting",
-    items: [
-      { to: "/test-cases", key: "testCases", icon: ListChecks },
-      { to: "/test-suites", key: "testSuites", icon: Layers },
+      { to: "/", key: "home", icon: Home },
+      { to: "/test", key: "runTest", icon: Zap },
       { to: "/test-runs", key: "testRuns", icon: PlayCircle },
       { to: "/live", key: "liveExecution", icon: Radio },
       { to: "/reports", key: "reports", icon: FileBarChart },
+    ],
+  },
+  {
+    group: "groupDesign",
+    items: [
+      { to: "/test-cases", key: "testCases", icon: ListChecks },
+      { to: "/test-suites", key: "testSuites", icon: Layers },
       { to: "/ai", key: "aiAssistant", icon: Bot },
     ],
   },
-  { group: "groupSystem", items: [{ to: "/settings", key: "settings", icon: Settings }] },
+  {
+    group: "groupManage",
+    items: [
+      { to: "/dashboard", key: "dashboard", icon: LayoutDashboard },
+      { to: "/projects", key: "projects", icon: FolderKanban },
+      { to: "/environments", key: "environments", icon: Server },
+      { to: "/settings", key: "settings", icon: Settings },
+    ],
+  },
 ];
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -151,6 +160,11 @@ export function AppLayout() {
           <Menu />
         </Button>
         <div className="flex-1" />
+        <Button asChild size="sm" className="hidden sm:inline-flex">
+          <NavLink to="/test">
+            <Zap /> Kiểm thử ngay
+          </NavLink>
+        </Button>
         {me && (
           <div className="flex items-center gap-3">
             <div className="hidden text-right text-sm leading-tight sm:block">

@@ -1,8 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Play } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,13 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { NativeSelect } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  api,
-  ApiError,
-  ENV_KIND_LABEL,
-  type Environment,
-  type Run,
-} from "@/lib/api";
+import { useStartRun } from "@/hooks/start-run";
+import { api, ENV_KIND_LABEL, type Environment } from "@/lib/api";
 
 /**
  * Chạy test case hoặc suite trên một môi trường.
@@ -35,6 +28,33 @@ type RunDialogProps = {
   suiteId?: string;
   label: string;
 };
+
+/** Lý do cần xác nhận do máy chủ trả về, hiển thị trước nút "Tôi xác nhận, chạy". */
+export function ConfirmReasons({ reasons }: { reasons: string[] }) {
+  return (
+    <div role="alert" className="grid gap-2 rounded-md border border-status-blocked/40 bg-status-blocked/10 p-3 text-sm">
+      <p className="flex items-center gap-2 font-medium">
+        <AlertTriangle className="size-4 text-status-blocked" /> Cần xác nhận trước khi chạy
+      </p>
+      <ul className="list-disc space-y-1 pl-5">
+        {reasons.map((r) => (
+          <li key={r}>{r}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Môi trường trỏ tới địa chỉ nội bộ mà Admin chưa cho phép mạng nội bộ: báo trước là test sẽ bị chặn. */
+export function PrivateNetworkHint({ env }: { env: Environment }) {
+  const isPrivate = /^(https?:\/\/)(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(env.base_url);
+  if (env.allow_private_network || !isPrivate) return null;
+  return (
+    <p className="text-xs text-status-blocked">
+      Môi trường trỏ tới địa chỉ nội bộ nhưng chưa được Admin cho phép mạng nội bộ: test sẽ bị chặn.
+    </p>
+  );
+}
 
 export function RunDialog(props: RunDialogProps) {
   return (
@@ -54,45 +74,16 @@ function RunDialogBody({
   suiteId,
   label,
 }: RunDialogProps) {
-  const navigate = useNavigate();
   const envs = useQuery({
     queryKey: ["environments", projectId],
     queryFn: () =>
       api<Environment[]>(`/api/projects/${projectId}/environments`),
   });
   const [chosenEnv, setEnvId] = useState("");
-  const [reasons, setReasons] = useState<string[] | null>(null);
   const env = envs.data?.find((e) => e.id === chosenEnv) ?? envs.data?.[0];
   const envId = env?.id ?? "";
 
-  const m = useMutation({
-    mutationFn: (confirm: boolean) =>
-      api<Run>(`/api/projects/${projectId}/runs`, {
-        method: "POST",
-        json: {
-          environment_id: envId,
-          test_case_ids: testCaseIds ?? [],
-          suite_id: suiteId ?? null,
-          confirm,
-        },
-      }),
-    onSuccess: (run) => {
-      toast.success("Đã đưa lần chạy vào hàng đợi");
-      onOpenChange(false);
-      navigate(`/test-runs/${run.id}`);
-    },
-    onError: (e) => {
-      if (
-        e instanceof ApiError &&
-        e.status === 409 &&
-        e.detail?.code === "confirmation_required"
-      ) {
-        setReasons(e.detail.reasons ?? []);
-        return;
-      }
-      toast.error(e.message);
-    },
-  });
+  const { start: m, reasons, clearReasons } = useStartRun(projectId, () => onOpenChange(false));
 
   return (
     <>
@@ -116,7 +107,7 @@ function RunDialogBody({
             value={envId}
             onChange={(e) => {
               setEnvId(e.target.value);
-              setReasons(null);
+              clearReasons();
             }}
           >
             {envs.data.map((e) => (
@@ -125,34 +116,10 @@ function RunDialogBody({
               </option>
             ))}
           </NativeSelect>
-          {env &&
-            !env.allow_private_network &&
-            /^(https?:\/\/)(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(
-              env.base_url,
-            ) && (
-              <p className="text-xs text-status-blocked">
-                Môi trường trỏ tới địa chỉ nội bộ nhưng chưa được Admin cho phép
-                mạng nội bộ: test sẽ bị chặn.
-              </p>
-            )}
+          {env && <PrivateNetworkHint env={env} />}
         </div>
       )}
-      {reasons && (
-        <div
-          role="alert"
-          className="grid gap-2 rounded-md border border-status-blocked/40 bg-status-blocked/10 p-3 text-sm"
-        >
-          <p className="flex items-center gap-2 font-medium">
-            <AlertTriangle className="size-4 text-status-blocked" /> Cần xác
-            nhận trước khi chạy
-          </p>
-          <ul className="list-disc space-y-1 pl-5">
-            {reasons.map((r) => (
-              <li key={r}>{r}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {reasons && <ConfirmReasons reasons={reasons} />}
       <DialogFooter>
         <Button
           type="button"
@@ -166,7 +133,14 @@ function RunDialogBody({
           variant={reasons ? "destructive" : "default"}
           disabled={!envId}
           loading={m.isPending}
-          onClick={() => m.mutate(!!reasons)}
+          onClick={() =>
+            m.mutate({
+              environment_id: envId,
+              test_case_ids: testCaseIds ?? [],
+              suite_id: suiteId ?? null,
+              confirm: !!reasons,
+            })
+          }
         >
           <Play /> {reasons ? "Tôi xác nhận, chạy" : "Chạy"}
         </Button>

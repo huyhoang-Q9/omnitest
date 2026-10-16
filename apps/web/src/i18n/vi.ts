@@ -1,10 +1,12 @@
 export const vi = {
-  app: { name: "OmniTest", tagline: "Nền tảng kiểm thử tự động" },
+  app: { name: "OmniTest", tagline: "Cổng kiểm thử tự động" },
   nav: {
-    groupOverview: "Tổng quan",
-    groupTesting: "Kiểm thử",
-    groupSystem: "Hệ thống",
-    dashboard: "Dashboard",
+    groupPortal: "Cổng kiểm thử",
+    groupDesign: "Thiết kế kiểm thử",
+    groupManage: "Quản lý",
+    home: "Trang chủ",
+    runTest: "Kiểm thử hệ thống",
+    dashboard: "Số liệu tổng quan",
     projects: "Dự án",
     environments: "Môi trường",
     testCases: "Test case",

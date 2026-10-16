@@ -1,5 +1,10 @@
 # OmniTest Automation Platform
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/huyhoang-Q9/omnitest?quickstart=1)
+
+Chạy thử toàn bộ hệ thống ngay trên GitHub: bấm nút trên, chờ script khởi động xong rồi mở cổng 8080
+([hướng dẫn](docs/codespaces.md)).
+
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 

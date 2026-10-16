@@ -1,0 +1,18 @@
+{
+  // Chạy toàn bộ OmniTest (web, API, worker, PostgreSQL, Redis, ứng dụng demo) trong GitHub Codespaces.
+  // Mở repo trên GitHub: Code > Codespaces > Create codespace on main. Lần đầu build image mất vài phút.
+  "name": "OmniTest",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "hostRequirements": { "cpus": 2, "memory": "8gb" },
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "OmniTest", "onAutoForward": "openBrowser" }
+  },
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "customizations": {
+    "codespaces": { "openFiles": ["docs/codespaces.md"] }
+  }
+}

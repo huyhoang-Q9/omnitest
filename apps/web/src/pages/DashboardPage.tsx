@@ -57,7 +57,7 @@ export function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Tổng quan dự án và hoạt động kiểm thử." />
+      <PageHeader title="Số liệu tổng quan" description="Số liệu dự án, kết quả theo ngày và hoạt động kiểm thử." />
       {q.isPending && <LoadingState rows={4} />}
       {q.isError && <ErrorState message={q.error.message} onRetry={() => q.refetch()} />}
       {q.data && (

@@ -13,7 +13,7 @@ async function login(page: Page) {
   await page.getByLabel("Email").fill(EMAIL);
   await page.getByLabel("Mật khẩu").fill(PASSWORD);
   await page.getByRole("button", { name: "Đăng nhập" }).click();
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cổng kiểm thử tự động OmniTest" })).toBeVisible();
 }
 
 async function expectNoHorizontalOverflow(page: Page) {
@@ -72,7 +72,7 @@ test("chạy suite Smoke qua worker thật, xem kết quả từng bước", asy
     await page.screenshot({ path: `${shots}/${info.project.name}-${path.slice(1)}.png`, fullPage: true });
   }
 
-  await page.goto("/");
+  await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: /Kết quả 14 ngày/ })).toBeVisible();
   await expect(page.getByText(/Tỷ lệ đạt/)).toBeVisible();
   await page.screenshot({ path: `${shots}/${info.project.name}-dashboard-phase3.png`, fullPage: true });

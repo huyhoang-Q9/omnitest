@@ -15,6 +15,8 @@ const EnvironmentsPage = page(() => import("@/pages/EnvironmentsPage"), "Environ
 const ProjectDetailPage = page(() => import("@/pages/ProjectDetailPage"), "ProjectDetailPage");
 const ProjectsPage = page(() => import("@/pages/ProjectsPage"), "ProjectsPage");
 const ReportsPage = page(() => import("@/pages/ReportsPage"), "ReportsPage");
+const PortalPage = page(() => import("@/pages/PortalPage"), "PortalPage");
+const TestWizardPage = page(() => import("@/pages/TestWizardPage"), "TestWizardPage");
 const LivePage = page(() => import("@/pages/LivePage"), "LivePage");
 const RunDetailPage = page(() => import("@/pages/RunDetailPage"), "RunDetailPage");
 const SettingsPage = page(() => import("@/pages/SettingsPage"), "SettingsPage");
@@ -48,7 +50,9 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route element={<RequireAuth />}>
-        <Route index element={<DashboardPage />} />
+        <Route index element={<PortalPage />} />
+        <Route path="test" element={<TestWizardPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
         <Route path="projects" element={<ProjectsPage />} />
         <Route path="projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="environments" element={<EnvironmentsPage />} />

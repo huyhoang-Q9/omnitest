@@ -92,3 +92,34 @@ jobs:
       - name: Dọn
         if: always()
         run: docker compose -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env.ci down -v
+
+  # Script khởi động của GitHub Codespaces (.devcontainer/start.sh) chạy được từ đầu: build, tạo tài khoản, dự án demo.
+  codespaces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Chạy script khởi động Codespaces
+        run: OMNITEST_COOKIE_SECURE=false bash .devcontainer/start.sh
+      - name: Đăng nhập bằng tài khoản script đã tạo, thấy dự án DEMO
+        run: |
+          python3 - <<'PY'
+          import http.cookiejar, json, re, urllib.request
+          text = open("omnitest-dang-nhap.txt", encoding="utf-8").read()
+          email = re.search(r"Email:\s+(\S+)", text).group(1)
+          password = re.search(r"Mật khẩu:\s+(\S+)", text).group(1)
+          op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+          def call(path, body=None):
+              req = urllib.request.Request("http://127.0.0.1:8080" + path, method="POST" if body else "GET",
+                  data=json.dumps(body).encode() if body else None,
+                  headers={"Content-Type": "application/json", "X-OmniTest-CSRF": "1"})
+              return json.loads(op.open(req, timeout=30).read() or b"null")
+          call("/api/auth/login", {"email": email, "password": password})
+          keys = [p["key"] for p in call("/api/projects?page_size=100")["items"]]
+          assert "DEMO" in keys, keys
+          print("OK  đăng nhập và thấy dự án DEMO")
+          PY
+      - name: Chạy lại script (codespace khởi động lại) không lỗi, không tạo trùng
+        run: bash .devcontainer/start.sh
+      - name: Dọn
+        if: always()
+        run: docker compose -f infra/docker/compose.yaml --env-file .env.codespaces down -v

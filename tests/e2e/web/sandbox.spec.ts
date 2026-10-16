@@ -16,7 +16,7 @@ async function login(page: Page) {
   await page.getByLabel("Email").fill(EMAIL);
   await page.getByLabel("Mật khẩu").fill(PASSWORD);
   await page.getByRole("button", { name: "Đăng nhập" }).click();
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cổng kiểm thử tự động OmniTest" })).toBeVisible();
   const adapters = await (await page.request.get("/api/adapters")).json();
   const sandbox = adapters.find((a: { test_kinds: string[] }) => a.test_kinds.includes("script"));
   test.skip(!sandbox?.environment_ok, "Máy chủ chưa bật sandbox script code");

@@ -25,3 +25,6 @@ playwright-report/
 *.log
 .run/
 *.rdb
+
+# Codespaces
+omnitest-dang-nhap.txt
