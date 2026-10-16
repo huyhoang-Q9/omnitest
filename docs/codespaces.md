@@ -7,11 +7,20 @@ GitHub, mở bằng trình duyệt. Không cần cài gì trên máy.
 
 1. Trên trang repo GitHub, bấm nút **Open in GitHub Codespaces** ở README (hoặc **Code > Codespaces > Create
    codespace on main**).
-2. Chờ script `.devcontainer/start.sh` chạy xong trong cửa sổ terminal. Lần đầu build image mất vài phút; các lần
-   mở lại nhanh hơn.
-3. Trình duyệt tự mở cổng **8080 (OmniTest)**. Nếu không, mở tab **PORTS** và bấm biểu tượng quả địa cầu ở cổng 8080.
-4. Đăng nhập bằng thông tin trong file `omnitest-dang-nhap.txt` ở thư mục gốc (mật khẩu sinh ngẫu nhiên cho từng
-   codespace, file không được commit).
+2. Script `.devcontainer/start.sh` tự chạy khi codespace khởi động. Lần đầu build image mất vài phút; các lần mở
+   lại nhanh hơn.
+3. Mở file `omnitest-dang-nhap.txt` ở thư mục gốc (khung Explorer bên trái) để lấy Email và Mật khẩu. File có ngay từ
+   đầu; chỉ đăng nhập khi dòng đầu file ghi **sẵn sàng**. Mật khẩu sinh ngẫu nhiên cho từng codespace, file không
+   được commit.
+4. Mở tab **PORTS**, bấm biểu tượng quả địa cầu ở cổng **8080 (OmniTest)** và đăng nhập.
+
+Không thấy file hoặc file vẫn ghi "ĐANG KHỞI ĐỘNG" quá lâu: mở Terminal (☰ > Terminal > New Terminal) và chạy
+
+```bash
+bash .devcontainer/start.sh
+```
+
+Lệnh chạy lại nhiều lần vẫn an toàn và in Email, Mật khẩu ở cuối. Nếu báo lỗi, gửi vài dòng cuối cho đội phát triển.
 
 ## Thử kiểm thử
 

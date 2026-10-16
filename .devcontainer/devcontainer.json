@@ -12,6 +12,8 @@
     "8080": { "label": "OmniTest", "onAutoForward": "openBrowser" }
   },
   "postStartCommand": "bash .devcontainer/start.sh",
+  // Mỗi lần mở codespace: in thông tin đăng nhập ra terminal.
+  "postAttachCommand": "cat omnitest-dang-nhap.txt 2>/dev/null || echo 'Chưa có file đăng nhập: chạy bash .devcontainer/start.sh'",
   "customizations": {
     "codespaces": { "openFiles": ["docs/codespaces.md"] }
   }
