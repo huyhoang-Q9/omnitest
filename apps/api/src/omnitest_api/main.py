@@ -9,7 +9,16 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.responses import Response
 
 from omnitest_api.config import get_settings
-from omnitest_api.routers import auth, dashboard, environments, projects, users
+from omnitest_api.routers import (
+    auth,
+    dashboard,
+    environments,
+    projects,
+    runs,
+    suites,
+    test_cases,
+    users,
+)
 from omnitest_api.security.redaction import RedactingFilter
 
 CSRF_HEADER = "x-omnitest-csrf"
@@ -58,7 +67,16 @@ def create_app() -> FastAPI:
             allow_headers=["content-type", CSRF_HEADER],
         )
 
-    for r in (auth.router, users.router, projects.router, environments.router, dashboard.router):
+    for r in (
+        auth.router,
+        users.router,
+        projects.router,
+        environments.router,
+        dashboard.router,
+        test_cases.router,
+        suites.router,
+        runs.router,
+    ):
         app.include_router(r)
 
     @app.get("/api/health", tags=["health"])

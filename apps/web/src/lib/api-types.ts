@@ -309,6 +309,308 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/projects/{project_id}/test-cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Test Cases */
+        get: operations["list_test_cases_api_projects__project_id__test_cases_get"];
+        put?: never;
+        /** Create Test Case */
+        post: operations["create_test_case_api_projects__project_id__test_cases_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/test-cases/{case_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Test Case */
+        get: operations["get_test_case_api_test_cases__case_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Test Case
+         * @description Xóa mềm: ẩn khỏi danh sách, gỡ khỏi suite, giữ lịch sử và kết quả chạy cũ; có thể khôi phục.
+         */
+        delete: operations["delete_test_case_api_test_cases__case_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Test Case */
+        patch: operations["update_test_case_api_test_cases__case_id__patch"];
+        trace?: never;
+    };
+    "/api/test-cases/{case_id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate Test Case */
+        post: operations["duplicate_test_case_api_test_cases__case_id__duplicate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/test-cases/{case_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore Test Case */
+        post: operations["restore_test_case_api_test_cases__case_id__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/test-cases/{case_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Versions */
+        get: operations["list_versions_api_test_cases__case_id__versions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/test-cases/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export Test Cases */
+        get: operations["export_test_cases_api_projects__project_id__test_cases_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/test-cases/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import Test Cases */
+        post: operations["import_test_cases_api_projects__project_id__test_cases_import_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/suites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Suites */
+        get: operations["list_suites_api_projects__project_id__suites_get"];
+        put?: never;
+        /** Create Suite */
+        post: operations["create_suite_api_projects__project_id__suites_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/suites/{suite_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Suite */
+        get: operations["get_suite_api_suites__suite_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Suite
+         * @description Xóa suite không xóa test case bên trong; lần chạy cũ vẫn giữ kết quả.
+         */
+        delete: operations["delete_suite_api_suites__suite_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Suite */
+        patch: operations["update_suite_api_suites__suite_id__patch"];
+        trace?: never;
+    };
+    "/api/suites/{suite_id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Suite Items */
+        put: operations["set_suite_items_api_suites__suite_id__items_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/adapters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Adapters */
+        get: operations["list_adapters_api_adapters_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Runs */
+        get: operations["list_runs_api_projects__project_id__runs_get"];
+        put?: never;
+        /** Create Run */
+        post: operations["create_run_api_projects__project_id__runs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/runs/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Active Runs */
+        get: operations["active_runs_api_runs_active_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run */
+        get: operations["get_run_api_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/run-items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run Item */
+        get: operations["get_run_item_api_run_items__item_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/runs/{run_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Run */
+        post: operations["cancel_run_api_runs__run_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/artifacts/{artifact_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Artifact */
+        get: operations["download_artifact_api_artifacts__artifact_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -330,6 +632,206 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdapterOut */
+        AdapterOut: {
+            /** Key */
+            key: string;
+            /** Display Name */
+            display_name: string;
+            /** Status */
+            status: string;
+            /** Test Kinds */
+            test_kinds: string[];
+            /** Environment Ok */
+            environment_ok: boolean;
+            /** Message */
+            message: string;
+        };
+        /** ApiStep */
+        ApiStep: {
+            /** Name */
+            name: string;
+            /**
+             * Method
+             * @default GET
+             * @enum {string}
+             */
+            method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+            /**
+             * Url
+             * @description Đường dẫn tương đối theo Base URL hoặc URL đầy đủ
+             */
+            url: string;
+            /** Headers */
+            headers?: {
+                [key: string]: string;
+            };
+            /** Query */
+            query?: {
+                [key: string]: string;
+            };
+            /**
+             * Body Type
+             * @default none
+             * @enum {string}
+             */
+            body_type: "none" | "json" | "text" | "form";
+            /** Body */
+            body?: unknown;
+            /** Auth */
+            auth?: components["schemas"]["AuthNone"] | components["schemas"]["AuthBasic"] | components["schemas"]["AuthBearer"] | components["schemas"]["AuthApiKey"];
+            /** Assertions */
+            assertions?: (components["schemas"]["AssertStatus"] | components["schemas"]["AssertJsonPath"] | components["schemas"]["AssertJsonSchema"] | components["schemas"]["AssertHeader"] | components["schemas"]["AssertResponseTime"])[];
+            /** Extract */
+            extract?: components["schemas"]["Extract"][];
+            /**
+             * Timeout Ms
+             * @default 30000
+             */
+            timeout_ms: number;
+            /**
+             * Follow Redirects
+             * @default true
+             */
+            follow_redirects: boolean;
+        };
+        /** ApiTestDefinition */
+        ApiTestDefinition: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "api";
+            /** Steps */
+            steps: components["schemas"]["ApiStep"][];
+        };
+        /** ArtifactOut */
+        ArtifactOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Filename */
+            filename: string;
+            /** Content Type */
+            content_type: string;
+            /** Size */
+            size: number;
+            /** Step Result Id */
+            step_result_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** AssertHeader */
+        AssertHeader: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "header";
+            /** Name */
+            name: string;
+            /**
+             * Op
+             * @default exists
+             * @enum {string}
+             */
+            op: "equals" | "contains" | "exists" | "matches";
+            /** Value */
+            value?: string | null;
+        };
+        /** AssertJsonPath */
+        AssertJsonPath: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "json_path";
+            /**
+             * Path
+             * @description VD $.data.items[0].id
+             */
+            path: string;
+            /**
+             * Op
+             * @default equals
+             * @enum {string}
+             */
+            op: "equals" | "not_equals" | "contains" | "exists" | "not_exists" | "gt" | "lt" | "matches";
+            /** Value */
+            value?: unknown;
+        };
+        /** AssertJsonSchema */
+        AssertJsonSchema: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "json_schema";
+            /** Schema */
+            schema: {
+                [key: string]: unknown;
+            };
+        };
+        /** AssertResponseTime */
+        AssertResponseTime: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "response_time";
+            /** Max Ms */
+            max_ms: number;
+        };
+        /** AssertStatus */
+        AssertStatus: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "status";
+            /** Equals */
+            equals?: number | null;
+            /** One Of */
+            one_of?: number[] | null;
+        };
+        /**
+         * AttentionItem
+         * @description Test case có kết quả gần nhất là lỗi/không đạt/bị chặn.
+         */
+        AttentionItem: {
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /**
+             * Item Id
+             * Format: uuid
+             */
+            item_id: string;
+            /** Test Case Id */
+            test_case_id: string | null;
+            /** Project Key */
+            project_key: string;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            status: components["schemas"]["RunStatus"];
+            /** Error */
+            error: string | null;
+            /** Environment Name */
+            environment_name: string;
+            /** Finished At */
+            finished_at: string | null;
+        };
         /** AuditOut */
         AuditOut: {
             /**
@@ -357,6 +859,76 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** AuthApiKey */
+        AuthApiKey: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "api_key";
+            /**
+             * Header
+             * @default X-API-Key
+             */
+            header: string;
+            /** Value */
+            value: string;
+        };
+        /** AuthBasic */
+        AuthBasic: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "basic";
+            /**
+             * Username
+             * @description Có thể dùng {{BIEN}}
+             */
+            username: string;
+            /**
+             * Password
+             * @description Nên dùng {{BIEN_SECRET}}
+             */
+            password: string;
+        };
+        /** AuthBearer */
+        AuthBearer: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "bearer";
+            /** Token */
+            token: string;
+        };
+        /** AuthNone */
+        AuthNone: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "none";
+        };
+        /** Body_import_test_cases_api_projects__project_id__test_cases_import_post */
+        Body_import_test_cases_api_projects__project_id__test_cases_import_post: {
+            /** File */
+            file: string;
+        };
+        /** DailyRunStat */
+        DailyRunStat: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Passed */
+            passed: number;
+            /** Failed */
+            failed: number;
+            /** Other */
+            other: number;
+        };
         /** DashboardOut */
         DashboardOut: {
             /** Projects */
@@ -365,8 +937,26 @@ export interface components {
             environments: number;
             /** Members */
             members: number;
-            test_cases: components["schemas"]["FeatureStat"];
-            test_runs: components["schemas"]["FeatureStat"];
+            /** Test Cases */
+            test_cases: number;
+            /** Runs Total */
+            runs_total: number;
+            /** Active Runs */
+            active_runs: number;
+            /** Period Days */
+            period_days: number;
+            /** Item Totals */
+            item_totals: {
+                [key: string]: number;
+            };
+            /** Pass Rate */
+            pass_rate: number | null;
+            /** Daily */
+            daily: components["schemas"]["DailyRunStat"][];
+            /** Recent Runs */
+            recent_runs: components["schemas"]["RunOut"][];
+            /** Attention */
+            attention: components["schemas"]["AttentionItem"][];
             /** Recent Activity */
             recent_activity: components["schemas"]["AuditOut"][];
         };
@@ -454,22 +1044,43 @@ export interface components {
             /** Requires Run Confirmation */
             requires_run_confirmation?: boolean | null;
         };
-        /**
-         * FeatureStat
-         * @description value = None khi chức năng chưa có ở giai đoạn hiện tại (không phải số 0 giả).
-         */
-        FeatureStat: {
-            /** Value */
-            value: number | null;
-            /** Available */
-            available: boolean;
-            /** Note */
-            note?: string | null;
+        /** Extract */
+        Extract: {
+            /** Var */
+            var: string;
+            /**
+             * Source
+             * @default json_path
+             * @enum {string}
+             */
+            source: "json_path" | "header";
+            /** Expression */
+            expression: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ImportResult */
+        ImportResult: {
+            /** Dry Run */
+            dry_run: boolean;
+            /** Total Rows */
+            total_rows: number;
+            /** Created */
+            created: number;
+            /** Updated */
+            updated: number;
+            /** Errors */
+            errors: components["schemas"]["ImportRowError"][];
+        };
+        /** ImportRowError */
+        ImportRowError: {
+            /** Row */
+            row: number;
+            /** Message */
+            message: string;
         };
         /** LoginIn */
         LoginIn: {
@@ -528,6 +1139,33 @@ export interface components {
             /** Page Size */
             page_size: number;
         };
+        /** Page[RunOut] */
+        Page_RunOut_: {
+            /** Items */
+            items: components["schemas"]["RunOut"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+        };
+        /** Page[TestCaseOut] */
+        Page_TestCaseOut_: {
+            /** Items */
+            items: components["schemas"]["TestCaseOut"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+        };
+        /**
+         * Priority
+         * @enum {string}
+         */
+        Priority: "low" | "medium" | "high" | "critical";
         /** ProjectCreate */
         ProjectCreate: {
             /** Name */
@@ -591,6 +1229,541 @@ export interface components {
             name?: string | null;
             /** Description */
             description?: string | null;
+        };
+        /** RunCreate */
+        RunCreate: {
+            /**
+             * Environment Id
+             * Format: uuid
+             */
+            environment_id: string;
+            /** Suite Id */
+            suite_id?: string | null;
+            /** Test Case Ids */
+            test_case_ids?: string[];
+            /**
+             * Confirm
+             * @default false
+             */
+            confirm: boolean;
+            /**
+             * Title
+             * @default
+             */
+            title: string;
+        };
+        /** RunDetailOut */
+        RunDetailOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Environment Id */
+            environment_id: string | null;
+            /** Environment Name */
+            environment_name: string;
+            /** Suite Id */
+            suite_id: string | null;
+            /** Title */
+            title: string;
+            status: components["schemas"]["RunStatus"];
+            /** Triggered By Email */
+            triggered_by_email: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Started At */
+            started_at: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /** Cancel Requested */
+            cancel_requested: boolean;
+            /** Total */
+            total: number;
+            /** Passed */
+            passed: number;
+            /** Failed */
+            failed: number;
+            /** Skipped */
+            skipped: number;
+            /** Blocked */
+            blocked: number;
+            /** Errored */
+            errored: number;
+            /** Cancelled */
+            cancelled: number;
+            /** Error */
+            error: string | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /** Project Key */
+            project_key?: string | null;
+            /** Items */
+            items: components["schemas"]["RunItemOut"][];
+        };
+        /** RunItemDetailOut */
+        RunItemDetailOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Test Case Id */
+            test_case_id: string | null;
+            /** Position */
+            position: number;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            test_type: components["schemas"]["TestType"];
+            /** Test Case Version */
+            test_case_version: number;
+            /** Side Effect */
+            side_effect: boolean;
+            /** Max Retries */
+            max_retries: number;
+            status: components["schemas"]["RunStatus"];
+            /** Attempts */
+            attempts: number;
+            /** Started At */
+            started_at: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Error */
+            error: string | null;
+            /** Error Type */
+            error_type: string | null;
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Steps */
+            steps: components["schemas"]["StepResultOut"][];
+            /** Artifacts */
+            artifacts: components["schemas"]["ArtifactOut"][];
+        };
+        /** RunItemOut */
+        RunItemOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Test Case Id */
+            test_case_id: string | null;
+            /** Position */
+            position: number;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            test_type: components["schemas"]["TestType"];
+            /** Test Case Version */
+            test_case_version: number;
+            /** Side Effect */
+            side_effect: boolean;
+            /** Max Retries */
+            max_retries: number;
+            status: components["schemas"]["RunStatus"];
+            /** Attempts */
+            attempts: number;
+            /** Started At */
+            started_at: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Error */
+            error: string | null;
+            /** Error Type */
+            error_type: string | null;
+        };
+        /** RunOut */
+        RunOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Environment Id */
+            environment_id: string | null;
+            /** Environment Name */
+            environment_name: string;
+            /** Suite Id */
+            suite_id: string | null;
+            /** Title */
+            title: string;
+            status: components["schemas"]["RunStatus"];
+            /** Triggered By Email */
+            triggered_by_email: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Started At */
+            started_at: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /** Cancel Requested */
+            cancel_requested: boolean;
+            /** Total */
+            total: number;
+            /** Passed */
+            passed: number;
+            /** Failed */
+            failed: number;
+            /** Skipped */
+            skipped: number;
+            /** Blocked */
+            blocked: number;
+            /** Errored */
+            errored: number;
+            /** Cancelled */
+            cancelled: number;
+            /** Error */
+            error: string | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /** Project Key */
+            project_key?: string | null;
+        };
+        /**
+         * RunStatus
+         * @enum {string}
+         */
+        RunStatus: "queued" | "running" | "passed" | "failed" | "skipped" | "blocked" | "cancelled" | "error";
+        /** StepResultOut */
+        StepResultOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Attempt */
+            attempt: number;
+            /** Index */
+            index: number;
+            /** Name */
+            name: string;
+            status: components["schemas"]["RunStatus"];
+            /** Duration Ms */
+            duration_ms: number;
+            /** Log */
+            log: string[];
+            /** Error */
+            error: string | null;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            };
+        };
+        /** SuiteCaseOut */
+        SuiteCaseOut: {
+            /** Position */
+            position: number;
+            test_case: components["schemas"]["TestCaseOut"];
+        };
+        /** SuiteCreate */
+        SuiteCreate: {
+            /** Name */
+            name: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Test Case Ids */
+            test_case_ids?: string[];
+        };
+        /** SuiteDetailOut */
+        SuiteDetailOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Case Count
+             * @default 0
+             */
+            case_count: number;
+            /** Items */
+            items?: components["schemas"]["SuiteCaseOut"][];
+        };
+        /** SuiteItemsIn */
+        SuiteItemsIn: {
+            /** Test Case Ids */
+            test_case_ids: string[];
+        };
+        /** SuiteOut */
+        SuiteOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Case Count
+             * @default 0
+             */
+            case_count: number;
+        };
+        /** SuiteUpdate */
+        SuiteUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Description */
+            description?: string | null;
+        };
+        /** TestCaseCreate */
+        TestCaseCreate: {
+            /** Title */
+            title: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            test_type: components["schemas"]["TestType"];
+            /** @default medium */
+            priority: components["schemas"]["Priority"];
+            /** @default draft */
+            status: components["schemas"]["TestCaseStatus"];
+            /** Tags */
+            tags?: string[];
+            /**
+             * Preconditions
+             * @default
+             */
+            preconditions: string;
+            /**
+             * Expected Result
+             * @default
+             */
+            expected_result: string;
+            /** Test Data */
+            test_data?: {
+                [key: string]: unknown;
+            };
+            /** Definition */
+            definition: components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["UnsupportedDefinition"];
+            /**
+             * Side Effect
+             * @default false
+             */
+            side_effect: boolean;
+            /**
+             * Retry Count
+             * @default 0
+             */
+            retry_count: number;
+            /**
+             * Timeout Seconds
+             * @default 300
+             */
+            timeout_seconds: number;
+        };
+        /** TestCaseOut */
+        TestCaseOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string;
+            test_type: components["schemas"]["TestType"];
+            priority: components["schemas"]["Priority"];
+            status: components["schemas"]["TestCaseStatus"];
+            /** Tags */
+            tags: string[];
+            /** Preconditions */
+            preconditions: string;
+            /** Expected Result */
+            expected_result: string;
+            /** Test Data */
+            test_data: {
+                [key: string]: unknown;
+            };
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Side Effect */
+            side_effect: boolean;
+            /** Retry Count */
+            retry_count: number;
+            /** Timeout Seconds */
+            timeout_seconds: number;
+            /** Version */
+            version: number;
+            /** Is Deleted */
+            is_deleted: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Step Count
+             * @default 0
+             */
+            step_count: number;
+        };
+        /**
+         * TestCaseStatus
+         * @enum {string}
+         */
+        TestCaseStatus: "draft" | "ready" | "deprecated";
+        /** TestCaseUpdate */
+        TestCaseUpdate: {
+            /** Version */
+            version: number;
+            /**
+             * Change Note
+             * @default
+             */
+            change_note: string;
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            test_type?: components["schemas"]["TestType"] | null;
+            priority?: components["schemas"]["Priority"] | null;
+            status?: components["schemas"]["TestCaseStatus"] | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Preconditions */
+            preconditions?: string | null;
+            /** Expected Result */
+            expected_result?: string | null;
+            /** Test Data */
+            test_data?: {
+                [key: string]: unknown;
+            } | null;
+            /** Definition */
+            definition?: (components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["UnsupportedDefinition"]) | null;
+            /** Side Effect */
+            side_effect?: boolean | null;
+            /** Retry Count */
+            retry_count?: number | null;
+            /** Timeout Seconds */
+            timeout_seconds?: number | null;
+        };
+        /** TestCaseVersionOut */
+        TestCaseVersionOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Version */
+            version: number;
+            /** Changed Fields */
+            changed_fields: string[];
+            /** Change Note */
+            change_note: string;
+            /** Changed By Email */
+            changed_by_email: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Snapshot */
+            snapshot: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * TestType
+         * @enum {string}
+         */
+        TestType: "api" | "web" | "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
+        /**
+         * UnsupportedDefinition
+         * @description Desktop/Mobile: lưu được mô tả thủ công, nhưng chạy sẽ trả blocked cho tới khi có adapter thật.
+         */
+        UnsupportedDefinition: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
         };
         /** UserCreate */
         UserCreate: {
@@ -683,6 +1856,64 @@ export interface components {
             value?: string | null;
             /** Description */
             description?: string | null;
+        };
+        /** Viewport */
+        Viewport: {
+            /**
+             * Width
+             * @default 1280
+             */
+            width: number;
+            /**
+             * Height
+             * @default 800
+             */
+            height: number;
+        };
+        /** WebStep */
+        WebStep: {
+            /** Name */
+            name: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "goto" | "click" | "fill" | "select" | "check" | "uncheck" | "press" | "wait_for" | "expect_visible" | "expect_hidden" | "expect_text" | "expect_url" | "expect_title" | "screenshot";
+            /**
+             * Selector
+             * @description Locator Playwright: CSS, text=..., role=button[name="Lưu"], label=..., testid=...
+             */
+            selector?: string | null;
+            /** Value */
+            value?: string | null;
+            /**
+             * Timeout Ms
+             * @default 10000
+             */
+            timeout_ms: number;
+        };
+        /** WebTestDefinition */
+        WebTestDefinition: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "web";
+            /**
+             * Browser
+             * @default chromium
+             * @enum {string}
+             */
+            browser: "chromium" | "firefox" | "webkit";
+            viewport?: components["schemas"]["Viewport"];
+            /**
+             * Trace
+             * @default on_failure
+             * @enum {string}
+             */
+            trace: "off" | "on_failure" | "always";
+            /** Steps */
+            steps: components["schemas"]["WebStep"][];
         };
     };
     responses: never;
@@ -1509,6 +2740,772 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Page_AuditOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_test_cases_api_projects__project_id__test_cases_get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+                test_type?: components["schemas"]["TestType"] | null;
+                priority?: components["schemas"]["Priority"] | null;
+                status?: components["schemas"]["TestCaseStatus"] | null;
+                tag?: string | null;
+                suite_id?: string | null;
+                include_deleted?: boolean;
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_TestCaseOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_test_case_api_projects__project_id__test_cases_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestCaseCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_test_case_api_test_cases__case_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_test_case_api_test_cases__case_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_test_case_api_test_cases__case_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestCaseUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    duplicate_test_case_api_test_cases__case_id__duplicate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_test_case_api_test_cases__case_id__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_versions_api_test_cases__case_id__versions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                case_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestCaseVersionOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_test_cases_api_projects__project_id__test_cases_export_get: {
+        parameters: {
+            query?: {
+                format?: "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_test_cases_api_projects__project_id__test_cases_import_post: {
+        parameters: {
+            query?: {
+                dry_run?: boolean;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_import_test_cases_api_projects__project_id__test_cases_import_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_suites_api_projects__project_id__suites_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuiteOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_suite_api_projects__project_id__suites_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuiteCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuiteDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_suite_api_suites__suite_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                suite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuiteDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_suite_api_suites__suite_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                suite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_suite_api_suites__suite_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                suite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuiteUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuiteDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_suite_items_api_suites__suite_id__items_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                suite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuiteItemsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuiteDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_adapters_api_adapters_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdapterOut"][];
+                };
+            };
+        };
+    };
+    list_runs_api_projects__project_id__runs_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["RunStatus"] | null;
+                environment_id?: string | null;
+                suite_id?: string | null;
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_RunOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_run_api_projects__project_id__runs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RunCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    active_runs_api_runs_active_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"][];
+                };
+            };
+        };
+    };
+    get_run_api_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_run_item_api_run_items__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunItemDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_run_api_runs__run_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_artifact_api_artifacts__artifact_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                artifact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

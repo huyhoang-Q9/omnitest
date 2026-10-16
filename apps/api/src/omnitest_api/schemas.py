@@ -264,24 +264,7 @@ class VariableOut(BaseModel):
     updated_at: datetime
 
 
-# ---------- Dashboard & audit ----------
-
-
-class FeatureStat(BaseModel):
-    """value = None khi chức năng chưa có ở giai đoạn hiện tại (không phải số 0 giả)."""
-
-    value: int | None
-    available: bool
-    note: str | None = None
-
-
-class DashboardOut(BaseModel):
-    projects: int
-    environments: int
-    members: int
-    test_cases: FeatureStat
-    test_runs: FeatureStat
-    recent_activity: list["AuditOut"]
+# ---------- Audit ----------
 
 
 class AuditOut(ORM):

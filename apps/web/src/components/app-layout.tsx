@@ -36,10 +36,10 @@ const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: "groupTesting",
     items: [
-      { to: "/test-cases", key: "testCases", icon: ListChecks, phase: "GĐ3" },
-      { to: "/test-suites", key: "testSuites", icon: Layers, phase: "GĐ3" },
-      { to: "/test-runs", key: "testRuns", icon: PlayCircle, phase: "GĐ3" },
-      { to: "/live", key: "liveExecution", icon: Radio, phase: "GĐ3" },
+      { to: "/test-cases", key: "testCases", icon: ListChecks },
+      { to: "/test-suites", key: "testSuites", icon: Layers },
+      { to: "/test-runs", key: "testRuns", icon: PlayCircle },
+      { to: "/live", key: "liveExecution", icon: Radio },
       { to: "/reports", key: "reports", icon: FileBarChart, phase: "GĐ4" },
       { to: "/ai", key: "aiAssistant", icon: Bot, phase: "GĐ5" },
     ],

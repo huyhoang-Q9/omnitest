@@ -10,19 +10,45 @@ export type EnvironmentKind = Schemas["EnvironmentKind"];
 export type Variable = Schemas["VariableOut"];
 export type Dashboard = Schemas["DashboardOut"];
 export type AuditEntry = Schemas["AuditOut"];
+export type TestCase = Schemas["TestCaseOut"];
+export type TestCaseVersion = Schemas["TestCaseVersionOut"];
+export type TestType = Schemas["TestType"];
+export type Priority = Schemas["Priority"];
+export type TestCaseStatus = Schemas["TestCaseStatus"];
+export type ImportResult = Schemas["ImportResult"];
+export type Suite = Schemas["SuiteOut"];
+export type SuiteDetail = Schemas["SuiteDetailOut"];
+export type Run = Schemas["RunOut"];
+export type RunDetail = Schemas["RunDetailOut"];
+export type RunItem = Schemas["RunItemOut"];
+export type RunItemDetail = Schemas["RunItemDetailOut"];
+export type StepResult = Schemas["StepResultOut"];
+export type Artifact = Schemas["ArtifactOut"];
+export type Adapter = Schemas["AdapterOut"];
+export type ApiStep = Schemas["ApiStep"];
+export type WebStep = Schemas["WebStep"];
+export type ApiDefinition = Schemas["ApiTestDefinition"];
+export type WebDefinition = Schemas["WebTestDefinition"];
 export type Page<T> = { items: T[]; total: number; page: number; page_size: number };
+
+/** Chi tiết lỗi có cấu trúc, VD 409 cần xác nhận trước khi chạy: {code, message, reasons}. */
+export type ErrorDetail = { code?: string; message?: string; reasons?: string[] };
 
 export class ApiError extends Error {
   readonly status: number;
-  constructor(status: number, message: string) {
+  readonly detail: ErrorDetail | null;
+  constructor(status: number, message: string, detail: ErrorDetail | null = null) {
     super(message);
     this.status = status;
+    this.detail = detail;
   }
 }
 
 function errorMessage(status: number, body: unknown): string {
   const detail = (body as { detail?: unknown } | null)?.detail;
   if (typeof detail === "string") return detail;
+  if (detail && typeof detail === "object" && !Array.isArray(detail) && typeof (detail as ErrorDetail).message === "string")
+    return (detail as ErrorDetail).message as string;
   if (Array.isArray(detail)) {
     // Lỗi kiểm tra dữ liệu của FastAPI: ghép thông điệp từng trường.
     return detail
@@ -58,7 +84,11 @@ export async function api<T>(path: string, init: RequestInit & { json?: unknown 
   }
   if (res.status === 204) return undefined as T;
   const body = await res.json().catch(() => null);
-  if (!res.ok) throw new ApiError(res.status, errorMessage(res.status, body));
+  if (!res.ok) {
+    const detail = (body as { detail?: unknown } | null)?.detail;
+    const structured = detail && typeof detail === "object" && !Array.isArray(detail) ? (detail as ErrorDetail) : null;
+    throw new ApiError(res.status, errorMessage(res.status, body), structured);
+  }
   return body as T;
 }
 

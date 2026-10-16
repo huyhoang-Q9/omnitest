@@ -9,7 +9,13 @@ import { EnvironmentsPage } from "@/pages/EnvironmentsPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProjectDetailPage } from "@/pages/ProjectDetailPage";
 import { ProjectsPage } from "@/pages/ProjectsPage";
+import { LivePage } from "@/pages/LivePage";
+import { RunDetailPage } from "@/pages/RunDetailPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { TestCaseEditorPage } from "@/pages/TestCaseEditorPage";
+import { TestCasesPage } from "@/pages/TestCasesPage";
+import { TestRunsPage } from "@/pages/TestRunsPage";
+import { SuiteDetailPage, TestSuitesPage } from "@/pages/TestSuitesPage";
 
 function RequireAuth() {
   const me = useMe();
@@ -31,10 +37,6 @@ function RequireAuth() {
 }
 
 const PLANNED = [
-  { path: "/test-cases", title: "Test case", phase: "Giai đoạn 3", description: "Tạo, sửa, sao chép, phân loại test case API và Web; import/export CSV, Excel; lịch sử thay đổi." },
-  { path: "/test-suites", title: "Test suite", phase: "Giai đoạn 3", description: "Nhóm test case thành suite và chạy theo suite." },
-  { path: "/test-runs", title: "Lần chạy", phase: "Giai đoạn 3", description: "Danh sách lần chạy, trạng thái, thời gian, log và kết quả từng bước." },
-  { path: "/live", title: "Đang thực thi", phase: "Giai đoạn 3", description: "Theo dõi lần chạy theo thời gian thực và hủy an toàn." },
   { path: "/reports", title: "Báo cáo", phase: "Giai đoạn 4", description: "Báo cáo theo dự án, suite, môi trường; xuất HTML, CSV, Excel." },
   { path: "/ai", title: "Trợ lý AI", phase: "Giai đoạn 5", description: "Đề xuất test case, sinh script nháp và phân tích lỗi; luôn cần người dùng duyệt." },
 ];
@@ -49,6 +51,14 @@ export default function App() {
         <Route path="projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="environments" element={<EnvironmentsPage />} />
         <Route path="environments/:environmentId" element={<EnvironmentDetailPage />} />
+        <Route path="test-cases" element={<TestCasesPage />} />
+        <Route path="test-cases/new" element={<TestCaseEditorPage />} />
+        <Route path="test-cases/:caseId" element={<TestCaseEditorPage key="edit" />} />
+        <Route path="test-suites" element={<TestSuitesPage />} />
+        <Route path="test-suites/:suiteId" element={<SuiteDetailPage />} />
+        <Route path="test-runs" element={<TestRunsPage />} />
+        <Route path="test-runs/:runId" element={<RunDetailPage />} />
+        <Route path="live" element={<LivePage />} />
         <Route path="settings" element={<SettingsPage />} />
         {PLANNED.map((p) => (
           <Route key={p.path} path={p.path.slice(1)} element={<ComingSoonPage {...p} />} />

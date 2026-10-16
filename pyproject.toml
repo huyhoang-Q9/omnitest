@@ -3,16 +3,19 @@ name = "omnitest"
 version = "0.1.0"
 description = "OmniTest Automation Platform (monorepo root)"
 requires-python = ">=3.12"
-dependencies = ["omnitest-api"]
+dependencies = ["omnitest-api", "omnitest-adapters", "omnitest-worker", "omnitest-demo-target"]
 
 [tool.uv]
 package = false
 
 [tool.uv.sources]
 omnitest-api = { workspace = true }
+omnitest-adapters = { workspace = true }
+omnitest-worker = { workspace = true }
+omnitest-demo-target = { workspace = true }
 
 [tool.uv.workspace]
-members = ["apps/api"]
+members = ["apps/api", "apps/worker", "apps/demo-target", "adapters"]
 
 [dependency-groups]
 dev = [
@@ -21,6 +24,8 @@ dev = [
     "ruff>=0.7",
     "mypy>=1.13",
     "httpx>=0.28.1",
+    "types-openpyxl>=3.1.5.20260827",
+    "types-jsonschema>=4.26.0.20261006",
 ]
 
 [tool.ruff]
@@ -40,13 +45,14 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
 testpaths = ["tests"]
+norecursedirs = ["tests/e2e"]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = "apps/api/src"
-packages = ["omnitest_api"]
+mypy_path = "apps/api/src:adapters/src:apps/worker/src"
+packages = ["omnitest_api", "omnitest_adapters", "omnitest_worker"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["omnitest_api", "tests"]

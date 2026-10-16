@@ -16,6 +16,19 @@ const LABELS: Record<string, string> = {
   "variable.create": "Thêm biến",
   "variable.update": "Cập nhật biến",
   "variable.delete": "Xóa biến",
+  "test_case.create": "Tạo test case",
+  "test_case.update": "Sửa test case",
+  "test_case.duplicate": "Nhân bản test case",
+  "test_case.delete": "Xóa test case",
+  "test_case.restore": "Khôi phục test case",
+  "test_case.import": "Nhập test case từ file",
+  "test_case.export": "Xuất test case",
+  "suite.create": "Tạo suite",
+  "suite.update": "Sửa suite",
+  "suite.set_items": "Cập nhật test case của suite",
+  "suite.delete": "Xóa suite",
+  "run.create": "Chạy test",
+  "run.cancel": "Hủy lần chạy",
 };
 
 export function auditLabel(action: string): string {
@@ -24,7 +37,7 @@ export function auditLabel(action: string): string {
 
 export function auditSummary(details: Record<string, unknown>): string {
   const parts: string[] = [];
-  for (const k of ["name", "project_key", "email", "variable", "environment", "role", "to"]) {
+  for (const k of ["code", "name", "project_key", "email", "variable", "environment", "role", "to"]) {
     const v = details[k];
     if (typeof v === "string" && v) parts.push(v);
   }

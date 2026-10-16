@@ -1,0 +1,13 @@
+[project]
+name = "omnitest-demo-target"
+version = "0.1.0"
+description = "Ứng dụng demo làm đích cho bộ test mẫu (đăng nhập, form validation, CRUD). Không dùng cho production."
+requires-python = ">=3.12"
+dependencies = ["fastapi>=0.115", "uvicorn>=0.32", "python-multipart>=0.0.20"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/omnitest_demo_target"]

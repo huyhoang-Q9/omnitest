@@ -1,6 +1,7 @@
 """Cấu hình ứng dụng, đọc từ biến môi trường (tiền tố OMNITEST_). Không có giá trị bí mật mặc định."""
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -24,6 +25,17 @@ class Settings(BaseSettings):
     login_lock_minutes: int = 15
 
     cors_origins: list[str] = Field(default_factory=list)
+
+    # Nơi lưu bằng chứng (ảnh, trace). Giai đoạn sau có thể chuyển sang S3/MinIO.
+    artifacts_dir: Path = Path("./artifacts/runs")
+    max_upload_bytes: int = 2 * 1024 * 1024
+    max_artifact_bytes: int = 50 * 1024 * 1024
+    # "redis": gửi job qua Dramatiq; "none": chỉ tạo run (dùng cho test, worker được gọi trực tiếp).
+    queue_backend: str = "redis"
+    # Run đang chạy mà không có heartbeat quá số phút này sẽ bị đánh dấu lỗi khi worker khởi động.
+    stale_run_minutes: int = 15
+    # Múi giờ dùng để gom số liệu theo ngày trên dashboard.
+    display_timezone: str = "Asia/Ho_Chi_Minh"
 
     @field_validator("env")
     @classmethod

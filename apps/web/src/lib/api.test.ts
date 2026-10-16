@@ -28,6 +28,13 @@ describe("api()", () => {
     await expect(api("/api/x")).rejects.toThrow("key: Mã sai");
   });
 
+  it("giữ chi tiết lỗi có cấu trúc (cần xác nhận trước khi chạy)", async () => {
+    mockFetch(409, { detail: { code: "confirmation_required", message: "Cần xác nhận", reasons: ["Môi trường UAT"] } });
+    const err = (await api("/api/x").catch((e: unknown) => e)) as ApiError;
+    expect(err.message).toBe("Cần xác nhận");
+    expect(err.detail).toEqual({ code: "confirmation_required", message: "Cần xác nhận", reasons: ["Môi trường UAT"] });
+  });
+
   it("lỗi mạng thành ApiError status 0", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("network"));
     const err = await api("/api/x").catch((e: unknown) => e);

@@ -3,9 +3,13 @@
 import asyncio
 import base64
 import os
+import socket
 import subprocess
 import sys
-from collections.abc import AsyncIterator, Awaitable, Callable
+import tempfile
+import threading
+import time
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
 from pathlib import Path
 
 os.environ.setdefault(
@@ -15,10 +19,14 @@ os.environ.setdefault(
 os.environ["OMNITEST_DATABASE_URL"] = os.environ["OMNITEST_TEST_DATABASE_URL"]
 os.environ["OMNITEST_ENV"] = "test"
 os.environ["OMNITEST_COOKIE_SECURE"] = "false"
+os.environ["OMNITEST_QUEUE_BACKEND"] = "none"
+os.environ["OMNITEST_ARTIFACTS_DIR"] = tempfile.mkdtemp(prefix="omnitest-artifacts-")
 os.environ["OMNITEST_MASTER_KEY"] = base64.urlsafe_b64encode(os.urandom(32)).decode()
 
 import httpx
 import pytest
+import uvicorn
+from omnitest_demo_target.app import app as demo_app
 from sqlalchemy import text
 
 from omnitest_api.db import get_engine, get_sessionmaker
@@ -107,3 +115,29 @@ async def login_as() -> AsyncIterator[LoginAs]:
     yield _login
     for c in clients:
         await c.aclose()
+
+
+def _free_port() -> int:
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        return int(s.getsockname()[1])
+
+
+@pytest.fixture(scope="session")
+def demo_url() -> Iterator[str]:
+    port = _free_port()
+    server = uvicorn.Server(
+        uvicorn.Config(demo_app, host="127.0.0.1", port=port, log_level="warning")
+    )
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    url = f"http://127.0.0.1:{port}"
+    for _ in range(100):
+        try:
+            if httpx.get(f"{url}/api/health", trust_env=False).status_code == 200:
+                break
+        except httpx.HTTPError:
+            time.sleep(0.05)
+    yield url
+    server.should_exit = True
+    thread.join(timeout=5)

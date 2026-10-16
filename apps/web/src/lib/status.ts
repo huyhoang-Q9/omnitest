@@ -11,3 +11,5 @@ export const STATUS_META: Record<RunStatus, { label: string; className: string }
   cancelled: { label: "Đã hủy", className: "bg-status-cancelled/12 text-status-cancelled" },
   error: { label: "Lỗi hệ thống", className: "bg-status-failed/12 text-status-failed" },
 };
+
+export const isActive = (s: RunStatus) => s === "queued" || s === "running";

@@ -1,4 +1,4 @@
-"""Lệnh quản trị: tạo quản trị hệ thống đầu tiên, sinh master key.
+"""Lệnh quản trị: tạo quản trị hệ thống đầu tiên, sinh master key, tạo dự án demo.
 
 Mật khẩu đọc từ biến môi trường OMNITEST_ADMIN_PASSWORD hoặc nhập ẩn, không nhận qua tham số dòng lệnh
 (tránh lộ trong lịch sử shell và danh sách tiến trình).
@@ -44,10 +44,25 @@ def main() -> None:
     ca.add_argument("--email", required=True)
     ca.add_argument("--name", default="Quản trị hệ thống")
     sub.add_parser("gen-master-key", help="Sinh OMNITEST_MASTER_KEY mới (32 byte)")
+    sd = sub.add_parser("seed-demo", help="Tạo dự án demo trỏ tới ứng dụng demo-target")
+    sd.add_argument("--owner-email", required=True, help="Email quản trị hệ thống tạo dự án")
+    sd.add_argument("--base-url", default="http://127.0.0.1:8100")
     args = parser.parse_args()
 
     if args.cmd == "gen-master-key":
         print(generate_master_key())
+        return
+    if args.cmd == "seed-demo":
+        from omnitest_api.services.demo_seed import SeedError, seed_demo
+
+        try:
+            result = asyncio.run(seed_demo(args.owner_email, args.base_url))
+        except SeedError as exc:
+            sys.exit(str(exc))
+        print(
+            f"Đã tạo dự án DEMO: {result['test_cases']} test case, {result['suites']} suite, "
+            f"môi trường trỏ tới {args.base_url}."
+        )
         return
     try:
         email = normalize_email(args.email)
