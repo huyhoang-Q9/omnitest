@@ -1,0 +1,21 @@
+# Bật sandbox script code cho Docker Compose (tùy chọn). ĐỌC docs/sandbox.md TRƯỚC KHI DÙNG:
+# worker được quyền gọi Docker daemon của máy chủ, tương đương quyền root trên máy đó.
+#   docker build -f infra/docker/sandbox.Dockerfile -t omnitest-sandbox:latest .
+#   docker compose -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env up --build
+# DOCKER_GID: nhóm sở hữu /var/run/docker.sock trên máy chủ (stat -c %g /var/run/docker.sock).
+services:
+  api:
+    environment:
+      OMNITEST_SANDBOX_ENABLED: "true"
+
+  worker:
+    build:
+      target: worker-sandbox
+    environment:
+      OMNITEST_SANDBOX_ENABLED: "true"
+      OMNITEST_SANDBOX_IMAGE: ${OMNITEST_SANDBOX_IMAGE:-omnitest-sandbox:latest}
+      DOCKER_CONFIG: /tmp/.docker
+    group_add:
+      - "${DOCKER_GID:?Cần đặt DOCKER_GID (nhóm của /var/run/docker.sock)}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

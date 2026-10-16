@@ -1,5 +1,6 @@
 # Image Python dùng chung cho API, worker và demo-target (chọn bằng --target).
 # Build từ thư mục gốc repo: docker build -f infra/docker/api.Dockerfile --target api .
+# Mạng doanh nghiệp có proxy TLS riêng: thêm  --secret id=extra_ca,src=/duong-dan/ca.crt
 FROM python:3.12-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
@@ -12,7 +13,9 @@ COPY apps/worker/pyproject.toml apps/worker/pyproject.toml
 COPY apps/demo-target/pyproject.toml apps/demo-target/pyproject.toml
 COPY adapters/pyproject.toml adapters/pyproject.toml
 COPY ai/pyproject.toml ai/pyproject.toml
-RUN for p in apps/api/src/omnitest_api apps/worker/src/omnitest_worker \
+RUN --mount=type=secret,id=extra_ca,required=false \
+    if [ -f /run/secrets/extra_ca ]; then export SSL_CERT_FILE=/run/secrets/extra_ca; fi; \
+    for p in apps/api/src/omnitest_api apps/worker/src/omnitest_worker \
         apps/demo-target/src/omnitest_demo_target adapters/src/omnitest_adapters ai/src/omnitest_ai; do \
         mkdir -p "$p" && touch "$p/__init__.py"; done \
     && uv sync --frozen --no-dev --no-install-workspace
@@ -36,9 +39,16 @@ CMD ["sh", "-c", "alembic upgrade head && uvicorn omnitest_api.main:app --host 0
 FROM base AS worker
 # Chromium và thư viện hệ thống cho adapter Web (Playwright).
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN playwright install --with-deps chromium && chmod -R a+rX /ms-playwright
+RUN --mount=type=secret,id=extra_ca,required=false \
+    if [ -f /run/secrets/extra_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/extra_ca; fi; \
+    playwright install --with-deps chromium && chmod -R a+rX /ms-playwright
 USER omnitest
 CMD ["dramatiq", "omnitest_worker.actors", "--processes", "1", "--threads", "2"]
+
+# Worker có thể chạy sandbox script code: thêm Docker CLI (chỉ client). Cần mount Docker socket, xem
+# infra/docker/compose.sandbox.yaml và docs/sandbox.md (quyền Docker tương đương root trên máy đó).
+FROM worker AS worker-sandbox
+COPY --from=docker:29-cli /usr/local/bin/docker /usr/local/bin/docker
 
 FROM base AS demo
 USER omnitest

@@ -1,23 +1,28 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AppLayout } from "@/components/app-layout";
-import { AIAssistantPage } from "@/pages/AIAssistantPage";
 import { ErrorState, LoadingState } from "@/components/states";
 import { useMe } from "@/hooks/auth";
-import { ComingSoonPage } from "@/pages/ComingSoonPage";
-import { DashboardPage } from "@/pages/DashboardPage";
-import { EnvironmentDetailPage } from "@/pages/EnvironmentDetailPage";
-import { EnvironmentsPage } from "@/pages/EnvironmentsPage";
 import { LoginPage } from "@/pages/LoginPage";
-import { ProjectDetailPage } from "@/pages/ProjectDetailPage";
-import { ProjectsPage } from "@/pages/ProjectsPage";
-import { ReportsPage } from "@/pages/ReportsPage";
-import { LivePage } from "@/pages/LivePage";
-import { RunDetailPage } from "@/pages/RunDetailPage";
-import { SettingsPage } from "@/pages/SettingsPage";
-import { TestCaseEditorPage } from "@/pages/TestCaseEditorPage";
-import { TestCasesPage } from "@/pages/TestCasesPage";
-import { TestRunsPage } from "@/pages/TestRunsPage";
-import { SuiteDetailPage, TestSuitesPage } from "@/pages/TestSuitesPage";
+
+// Mỗi trang là một chunk riêng, tải khi cần (trang đăng nhập tải ngay).
+const page = <K extends string>(load: () => Promise<Record<K, React.ComponentType>>, name: K) =>
+  lazy(() => load().then((m) => ({ default: m[name] })));
+const AIAssistantPage = page(() => import("@/pages/AIAssistantPage"), "AIAssistantPage");
+const DashboardPage = page(() => import("@/pages/DashboardPage"), "DashboardPage");
+const EnvironmentDetailPage = page(() => import("@/pages/EnvironmentDetailPage"), "EnvironmentDetailPage");
+const EnvironmentsPage = page(() => import("@/pages/EnvironmentsPage"), "EnvironmentsPage");
+const ProjectDetailPage = page(() => import("@/pages/ProjectDetailPage"), "ProjectDetailPage");
+const ProjectsPage = page(() => import("@/pages/ProjectsPage"), "ProjectsPage");
+const ReportsPage = page(() => import("@/pages/ReportsPage"), "ReportsPage");
+const LivePage = page(() => import("@/pages/LivePage"), "LivePage");
+const RunDetailPage = page(() => import("@/pages/RunDetailPage"), "RunDetailPage");
+const SettingsPage = page(() => import("@/pages/SettingsPage"), "SettingsPage");
+const TestCaseEditorPage = page(() => import("@/pages/TestCaseEditorPage"), "TestCaseEditorPage");
+const TestCasesPage = page(() => import("@/pages/TestCasesPage"), "TestCasesPage");
+const TestRunsPage = page(() => import("@/pages/TestRunsPage"), "TestRunsPage");
+const TestSuitesPage = page(() => import("@/pages/TestSuitesPage"), "TestSuitesPage");
+const SuiteDetailPage = page(() => import("@/pages/TestSuitesPage"), "SuiteDetailPage");
 
 function RequireAuth() {
   const me = useMe();
@@ -37,8 +42,6 @@ function RequireAuth() {
   if (!me.data) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   return <AppLayout />;
 }
-
-const PLANNED: { path: string; title: string; phase: string; description: string }[] = [];
 
 export default function App() {
   return (
@@ -61,9 +64,6 @@ export default function App() {
         <Route path="reports" element={<ReportsPage />} />
         <Route path="ai" element={<AIAssistantPage />} />
         <Route path="settings" element={<SettingsPage />} />
-        {PLANNED.map((p) => (
-          <Route key={p.path} path={p.path.slice(1)} element={<ComingSoonPage {...p} />} />
-        ))}
         <Route path="*" element={<ErrorState message="Không tìm thấy trang." />} />
       </Route>
     </Routes>

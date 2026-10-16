@@ -16,10 +16,10 @@ jobs:
           POSTGRES_PASSWORD: omnitest
           POSTGRES_DB: omnitest_test
         ports: ["5432:5432"]
-        options: --health-cmd "pg_isready -U omnitest" --health-interval 5s --health-retries 10
+        options: --health-cmd "pg_isready -U omnitest -d omnitest_test" --health-interval 5s --health-retries 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --frozen
       - run: uv run ruff format --check .
       - run: uv run ruff check .
@@ -28,7 +28,7 @@ jobs:
         run: |
           uv run playwright install --with-deps chromium
           echo "OMNITEST_CHROMIUM_EXECUTABLE=$(uv run python -c 'from playwright.sync_api import sync_playwright as s; p=s().start(); print(p.chromium.executable_path); p.stop()')" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: Cài Appium và driver fake (kiểm chứng giao thức adapter Desktop/Mobile)
@@ -51,9 +51,9 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: pnpm
@@ -62,3 +62,31 @@ jobs:
       - run: pnpm --filter @omnitest/web typecheck
       - run: pnpm --filter @omnitest/web test
       - run: pnpm --filter @omnitest/web exec vite build
+
+  # Build toàn bộ image và chạy thử stack Docker Compose như khi triển khai: suite Smoke qua worker (API + Web
+  # bằng Chromium trong container) và một script pytest trong sandbox do worker container khởi chạy.
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Tạo file env tạm (secret sinh ngẫu nhiên cho lần chạy này, không lưu lại)
+        run: |
+          python3 - <<'PY'
+          import base64, os, secrets
+          key = base64.urlsafe_b64encode(os.urandom(32)).decode().rstrip("=")
+          gid = os.stat("/var/run/docker.sock").st_gid
+          with open(".env.ci", "w") as f:
+              f.write(f"POSTGRES_PASSWORD={secrets.token_urlsafe(16)}\nOMNITEST_MASTER_KEY={key}\n")
+              f.write(f"OMNITEST_COOKIE_SECURE=false\nDOCKER_GID={gid}\n")
+          PY
+      - run: docker build -f infra/docker/sandbox.Dockerfile -t omnitest-sandbox:latest .
+      - name: Build và khởi động stack
+        run: docker compose -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env.ci up -d --build
+      - name: Smoke test qua nginx
+        run: python3 infra/scripts/compose_smoke.py -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env.ci --sandbox
+      - name: Log khi lỗi
+        if: failure()
+        run: docker compose -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env.ci logs --tail 200
+      - name: Dọn
+        if: always()
+        run: docker compose -f infra/docker/compose.yaml -f infra/docker/compose.sandbox.yaml --env-file .env.ci down -v

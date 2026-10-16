@@ -14,10 +14,11 @@ import {
   Settings,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import { useLogout, useMe } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
@@ -167,7 +168,9 @@ export function AppLayout() {
       </header>
 
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
-        <Outlet />
+        <Suspense fallback={<LoadingState />}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );
