@@ -1,8 +1,6 @@
-from omnitest_adapters.core.unsupported import NotSupportedAdapter
+from omnitest_adapters.appium.adapter import AppiumAdapter
 
-adapter = NotSupportedAdapter(
-    "mobile-appium",
-    "Mobile (Appium)",
-    ("mobile_android", "mobile_ios"),
-    "Dự kiến Giai đoạn 6, cần Appium server và thiết bị hoặc emulator thật",
+# Android (UiAutomator2) và iOS (XCUITest) qua Appium, cần thiết bị hoặc emulator/simulator thật.
+adapter = AppiumAdapter(
+    "mobile-appium", "Mobile Android/iOS (Appium, thử nghiệm)", ("mobile_android", "mobile_ios")
 )

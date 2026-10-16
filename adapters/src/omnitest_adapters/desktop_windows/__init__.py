@@ -1,8 +1,6 @@
-from omnitest_adapters.core.unsupported import NotSupportedAdapter
+from omnitest_adapters.appium.adapter import AppiumAdapter
 
-adapter = NotSupportedAdapter(
-    "desktop-windows",
-    "Desktop Windows",
-    ("desktop_windows",),
-    "Dự kiến Giai đoạn 6 (Appium Windows driver), cần máy Windows thật",
+# Appium driver Windows (WinAppDriver) trên máy Windows thật.
+adapter = AppiumAdapter(
+    "desktop-windows", "Desktop Windows (Appium Windows, thử nghiệm)", ("desktop_windows",)
 )

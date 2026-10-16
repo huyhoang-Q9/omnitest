@@ -312,7 +312,9 @@ export function TestCasesPage() {
                             <div className="mt-1 flex flex-wrap gap-1">
                               {tc.is_deleted && <Badge variant="danger">Đã xóa</Badge>}
                               {tc.side_effect && <Badge variant="warning">Thay đổi dữ liệu</Badge>}
-                              {!RUNNABLE_TYPES.includes(tc.test_type) && <Badge variant="muted">Chưa chạy được</Badge>}
+                              {!RUNNABLE_TYPES.includes(tc.test_type) && (
+                                <Badge variant="muted">{tc.step_count === 0 ? "Chưa có bước tự động" : "Thử nghiệm (Appium)"}</Badge>
+                              )}
                               {tc.tags.map((t) => (
                                 <Badge key={t} variant="outline">{t}</Badge>
                               ))}

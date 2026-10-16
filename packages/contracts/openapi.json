@@ -3250,6 +3250,152 @@
         ],
         "title": "ApiTestDefinition"
       },
+      "AppLocator": {
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "accessibility_id",
+              "id",
+              "name",
+              "xpath",
+              "class_name",
+              "ios_predicate",
+              "ios_class_chain",
+              "android_uiautomator"
+            ],
+            "title": "Strategy",
+            "default": "accessibility_id"
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "AppLocator"
+      },
+      "AppStep": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "tap",
+              "type",
+              "clear",
+              "expect_visible",
+              "expect_hidden",
+              "expect_text",
+              "screenshot",
+              "back"
+            ],
+            "title": "Action"
+          },
+          "locator": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AppLocator"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "maximum": 120000.0,
+            "minimum": 100.0,
+            "title": "Timeout Ms",
+            "default": 10000
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "action"
+        ],
+        "title": "AppStep"
+      },
+      "AppTestDefinition": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "desktop_macos",
+              "desktop_windows",
+              "mobile_android",
+              "mobile_ios"
+            ],
+            "title": "Kind"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 10000,
+            "title": "Notes",
+            "default": ""
+          },
+          "capabilities": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Capabilities"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/AppStep"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Steps"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "AppTestDefinition",
+        "description": "Desktop/Mobile chạy qua Appium server (URL lấy từ Base URL của môi trường).\n\nTest cũ chỉ có \"notes\" vẫn hợp lệ; không có bước thì khi chạy trả Bị chặn (không có gì để tự động hóa)."
+      },
       "ArtifactOut": {
         "properties": {
           "id": {
@@ -6262,7 +6408,7 @@
                 "$ref": "#/components/schemas/WebTestDefinition"
               },
               {
-                "$ref": "#/components/schemas/UnsupportedDefinition"
+                "$ref": "#/components/schemas/AppTestDefinition"
               }
             ],
             "title": "Definition",
@@ -6270,10 +6416,10 @@
               "propertyName": "kind",
               "mapping": {
                 "api": "#/components/schemas/ApiTestDefinition",
-                "desktop_macos": "#/components/schemas/UnsupportedDefinition",
-                "desktop_windows": "#/components/schemas/UnsupportedDefinition",
-                "mobile_android": "#/components/schemas/UnsupportedDefinition",
-                "mobile_ios": "#/components/schemas/UnsupportedDefinition",
+                "desktop_macos": "#/components/schemas/AppTestDefinition",
+                "desktop_windows": "#/components/schemas/AppTestDefinition",
+                "mobile_android": "#/components/schemas/AppTestDefinition",
+                "mobile_ios": "#/components/schemas/AppTestDefinition",
                 "web": "#/components/schemas/WebTestDefinition"
               }
             }
@@ -6653,17 +6799,17 @@
                     "$ref": "#/components/schemas/WebTestDefinition"
                   },
                   {
-                    "$ref": "#/components/schemas/UnsupportedDefinition"
+                    "$ref": "#/components/schemas/AppTestDefinition"
                   }
                 ],
                 "discriminator": {
                   "propertyName": "kind",
                   "mapping": {
                     "api": "#/components/schemas/ApiTestDefinition",
-                    "desktop_macos": "#/components/schemas/UnsupportedDefinition",
-                    "desktop_windows": "#/components/schemas/UnsupportedDefinition",
-                    "mobile_android": "#/components/schemas/UnsupportedDefinition",
-                    "mobile_ios": "#/components/schemas/UnsupportedDefinition",
+                    "desktop_macos": "#/components/schemas/AppTestDefinition",
+                    "desktop_windows": "#/components/schemas/AppTestDefinition",
+                    "mobile_android": "#/components/schemas/AppTestDefinition",
+                    "mobile_ios": "#/components/schemas/AppTestDefinition",
                     "web": "#/components/schemas/WebTestDefinition"
                   }
                 }
@@ -6785,33 +6931,6 @@
           "mobile_ios"
         ],
         "title": "TestType"
-      },
-      "UnsupportedDefinition": {
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "desktop_macos",
-              "desktop_windows",
-              "mobile_android",
-              "mobile_ios"
-            ],
-            "title": "Kind"
-          },
-          "notes": {
-            "type": "string",
-            "maxLength": 10000,
-            "title": "Notes",
-            "default": ""
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "kind"
-        ],
-        "title": "UnsupportedDefinition",
-        "description": "Desktop/Mobile: lưu được mô tả thủ công, nhưng chạy sẽ trả blocked cho tới khi có adapter thật."
       },
       "UserCreate": {
         "properties": {

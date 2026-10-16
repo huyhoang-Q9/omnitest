@@ -9,7 +9,7 @@ export const TEST_TYPE_LABEL: Record<TestType, string> = {
   mobile_ios: "Mobile iOS",
 };
 
-/** Loại test đã có adapter chạy thật. Các loại khác lưu được nhưng chạy sẽ báo "Bị chặn". */
+/** Loại test có adapter ổn định. Desktop/Mobile chạy qua Appium ở mức thử nghiệm (xem APP_TYPES). */
 export const RUNNABLE_TYPES: TestType[] = ["api", "web"];
 
 export const PRIORITY_LABEL: Record<Priority, string> = {
@@ -92,3 +92,30 @@ export function formatBytes(n: number): string {
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
+
+/** Desktop/Mobile chạy qua Appium (thử nghiệm). */
+export const APP_TYPES: TestType[] = ["desktop_macos", "desktop_windows", "mobile_android", "mobile_ios"];
+
+export const APP_ACTION_LABEL: Record<string, string> = {
+  tap: "Chạm / bấm",
+  type: "Nhập",
+  clear: "Xóa nội dung",
+  expect_visible: "Kiểm tra hiển thị",
+  expect_hidden: "Kiểm tra bị ẩn",
+  expect_text: "Kiểm tra nội dung",
+  screenshot: "Chụp màn hình",
+  back: "Quay lại",
+};
+export const APP_NEEDS_LOCATOR = new Set(["tap", "type", "clear", "expect_visible", "expect_hidden", "expect_text"]);
+export const APP_NEEDS_VALUE = new Set(["type", "expect_text"]);
+
+export const LOCATOR_STRATEGY_LABEL: Record<string, string> = {
+  accessibility_id: "Accessibility ID",
+  id: "ID",
+  name: "Name",
+  xpath: "XPath",
+  class_name: "Class name",
+  ios_predicate: "iOS predicate",
+  ios_class_chain: "iOS class chain",
+  android_uiautomator: "Android UiAutomator",
+};

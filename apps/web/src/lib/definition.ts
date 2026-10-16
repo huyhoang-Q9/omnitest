@@ -26,7 +26,7 @@ export function defaultDefinition(type: TestType): Definition {
       trace: "on_failure",
       steps: [{ name: "Mở trang", action: "goto", value: "/" }],
     };
-  return { kind: type, notes: "" };
+  return { kind: type, notes: "", capabilities: {}, steps: [] };
 }
 
 /** Giá trị so sánh: số, true/false, null được hiểu theo JSON, còn lại là chuỗi. */

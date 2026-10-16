@@ -3,7 +3,8 @@
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 
-Trạng thái hiện tại: **Giai đoạn 5** (Trợ lý AI tùy chọn, tắt mặc định: đề xuất test case, phân tích lỗi, người
+Trạng thái hiện tại: **Giai đoạn 6** (adapter Desktop/Mobile qua Appium ở mức thử nghiệm: Android, iOS, macOS,
+Windows; trình soạn bước trên web), trên nền Giai đoạn 5 (Trợ lý AI tùy chọn, tắt mặc định: đề xuất test case, phân tích lỗi, người
 dùng duyệt mới lưu), trên nền Giai đoạn 4 (báo cáo HTML/CSV/Excel theo lần chạy và tổng hợp dự án, sinh test API từ
 OpenAPI, bộ test bảo mật SSRF/IDOR/upload), trên nền Giai đoạn 3 (test case, suite, chạy test API bằng HTTPX và Web
 bằng Playwright qua worker Dramatiq, kết quả từng bước, ảnh chụp, trace, dashboard) và Giai đoạn 2 (đăng nhập, phân
@@ -16,7 +17,7 @@ quyền, dự án, môi trường, biến secret, audit). Kế hoạch tổng th
 apps/api          FastAPI + SQLAlchemy + Alembic (migrations trong apps/api/migrations)
 apps/worker       Worker Dramatiq: nhận lần chạy từ Redis, gọi adapter, lưu kết quả và bằng chứng
 apps/demo-target  Ứng dụng demo "Kho hàng mini" làm đích cho bộ test mẫu (không dùng production)
-adapters          Adapter API (HTTPX), Web (Playwright); Desktop/Mobile mới là khung, chạy sẽ báo "Bị chặn"
+adapters          Adapter API (HTTPX), Web (Playwright), Desktop/Mobile qua Appium W3C WebDriver (thử nghiệm)
 ai                Lớp AI tùy chọn: provider Anthropic/OpenAI-compatible, đề xuất test case, phân tích lỗi
 apps/web          React + TypeScript + Vite + Tailwind (thành phần theo phong cách shadcn/ui)
 packages/contracts  OpenAPI sinh từ Pydantic, nguồn type TypeScript cho web
@@ -97,8 +98,9 @@ Sau khi đổi API: `pnpm --filter @omnitest/web gen:api` để sinh lại `open
 - Không commit `.env` hay bất kỳ secret nào. Secret của môi trường test được mã hóa AES-256-GCM bằng
   `OMNITEST_MASTER_KEY`; mất khóa này thì không giải mã được secret đã lưu.
 - Người ngoài dự án nhận 404 cho mọi tài nguyên của dự án. Mọi thao tác quan trọng ghi audit log.
-- Chức năng chưa triển khai hiển thị rõ "Chưa hỗ trợ", không trả kết quả giả. Test Desktop/Mobile chạy sẽ báo
-  "Bị chặn" cho tới khi có adapter thật.
+- Chức năng chưa triển khai hiển thị rõ "Chưa hỗ trợ", không trả kết quả giả. Test Desktop/Mobile cần Appium
+  server (Base URL của môi trường), driver và thiết bị thật; thiếu một trong các thứ đó thì kết quả là "Bị chặn".
+  Capability Appium bị giới hạn theo danh sách cho phép, "app" không được là URL.
 - Worker chỉ chạy định nghĩa test dạng khai báo qua adapter, không thực thi code người dùng nhập.
 - Chặn SSRF: chỉ gọi host của môi trường và danh sách host được phép; mạng nội bộ chỉ khi Admin dự án bật;
   địa chỉ metadata cloud luôn bị chặn, kiểm tra cả khi chuyển hướng và lúc kết nối. Trình duyệt của test Web đi

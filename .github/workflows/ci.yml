@@ -28,6 +28,16 @@ jobs:
         run: |
           uv run playwright install --with-deps chromium
           echo "OMNITEST_CHROMIUM_EXECUTABLE=$(uv run python -c 'from playwright.sync_api import sync_playwright as s; p=s().start(); print(p.chromium.executable_path); p.stop()')" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Cài Appium và driver fake (kiểm chứng giao thức adapter Desktop/Mobile)
+        run: |
+          mkdir -p "$RUNNER_TEMP/appium" && cd "$RUNNER_TEMP/appium"
+          npm init -y >/dev/null && npm i appium@3.8.0
+          APPIUM_HOME="$RUNNER_TEMP/appium/home" npx appium driver install --source=npm @appium/fake-driver@6.2.4
+          echo "APPIUM_HOME=$RUNNER_TEMP/appium/home" >> "$GITHUB_ENV"
+          echo "OMNITEST_APPIUM_BIN=$RUNNER_TEMP/appium/node_modules/.bin/appium" >> "$GITHUB_ENV"
       - run: uv run pytest -q -rs
         env:
           OMNITEST_TEST_DATABASE_URL: postgresql+asyncpg://omnitest:omnitest@127.0.0.1:5432/omnitest_test

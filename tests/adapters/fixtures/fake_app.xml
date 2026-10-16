@@ -1,0 +1,9 @@
+<app>
+  <title>Kho hàng (ứng dụng giả cho driver fake của Appium)</title>
+  <MockListView>
+    <MockInputField id="username" />
+    <MockButton id="login">Đăng nhập</MockButton>
+    <MockInputField id="search" />
+    <MockText id="hidden" visible="false" value="ẩn" />
+  </MockListView>
+</app>

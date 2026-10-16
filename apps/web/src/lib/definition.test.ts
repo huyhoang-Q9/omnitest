@@ -25,6 +25,6 @@ describe("định nghĩa test", () => {
 
   it("định nghĩa mặc định khớp loại test", () => {
     expect(defaultDefinition("web").kind).toBe("web");
-    expect(defaultDefinition("desktop_macos")).toEqual({ kind: "desktop_macos", notes: "" });
+    expect(defaultDefinition("desktop_macos")).toEqual({ kind: "desktop_macos", notes: "", capabilities: {}, steps: [] });
   });
 });

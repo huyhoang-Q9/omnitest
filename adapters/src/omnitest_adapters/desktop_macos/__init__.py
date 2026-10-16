@@ -1,8 +1,6 @@
-from omnitest_adapters.core.unsupported import NotSupportedAdapter
+from omnitest_adapters.appium.adapter import AppiumAdapter
 
-adapter = NotSupportedAdapter(
-    "desktop-macos",
-    "Desktop macOS",
-    ("desktop_macos",),
-    "Dự kiến Giai đoạn 6 (Appium Mac2/XCUITest), cần máy macOS thật có quyền Accessibility",
+# Appium driver Mac2 trên máy macOS thật (cần quyền Accessibility cho Appium/WebDriverAgentMac).
+adapter = AppiumAdapter(
+    "desktop-macos", "Desktop macOS (Appium Mac2, thử nghiệm)", ("desktop_macos",)
 )

@@ -200,22 +200,122 @@ class WebTestDefinition(Strict):
     steps: list[WebStep] = Field(min_length=1, max_length=100)
 
 
-# ---------- Chưa hỗ trợ ----------
+# ---------- Desktop / Mobile (Appium) ----------
+
+AppKind = Literal["desktop_macos", "desktop_windows", "mobile_android", "mobile_ios"]
+LocatorStrategy = Literal[
+    "accessibility_id",
+    "id",
+    "name",
+    "xpath",
+    "class_name",
+    "ios_predicate",
+    "ios_class_chain",
+    "android_uiautomator",
+]
+# Chỉ cho phép capability phục vụ mở ứng dụng và chọn thiết bị; không cho capability trỏ tới file thực thi
+# hay đổi hành vi bảo mật của Appium server.
+ALLOWED_CAPABILITIES = {
+    "app",
+    "bundleId",
+    "appPackage",
+    "appActivity",
+    "appWaitActivity",
+    "deviceName",
+    "platformVersion",
+    "udid",
+    "noReset",
+    "fullReset",
+    "newCommandTimeout",
+    "language",
+    "locale",
+    "orientation",
+    "autoGrantPermissions",
+    "appArguments",
+    "appWorkingDir",
+    "arguments",
+}
+APP_ACTIONS_NEED_LOCATOR = {
+    "tap",
+    "type",
+    "clear",
+    "expect_visible",
+    "expect_hidden",
+    "expect_text",
+}
 
 
-class UnsupportedDefinition(Strict):
-    """Desktop/Mobile: lưu được mô tả thủ công, nhưng chạy sẽ trả blocked cho tới khi có adapter thật."""
+class AppLocator(Strict):
+    strategy: LocatorStrategy = "accessibility_id"
+    value: str = Field(min_length=1, max_length=2000)
 
-    kind: Literal["desktop_macos", "desktop_windows", "mobile_android", "mobile_ios"]
+
+class AppStep(Strict):
+    name: str = Field(min_length=1, max_length=200)
+    action: Literal[
+        "tap",
+        "type",
+        "clear",
+        "expect_visible",
+        "expect_hidden",
+        "expect_text",
+        "screenshot",
+        "back",
+    ]
+    locator: AppLocator | None = None
+    value: str | None = Field(default=None, max_length=5000)
+    timeout_ms: int = Field(default=10_000, ge=100, le=120_000)
+
+    @model_validator(mode="after")
+    def _check(self) -> "AppStep":
+        if self.action in APP_ACTIONS_NEED_LOCATOR and self.locator is None:
+            raise ValueError(f"Hành động {self.action} cần locator")
+        if self.action in {"type", "expect_text"} and self.value is None:
+            raise ValueError(f"Hành động {self.action} cần value")
+        return self
+
+
+class AppTestDefinition(Strict):
+    """Desktop/Mobile chạy qua Appium server (URL lấy từ Base URL của môi trường).
+
+    Test cũ chỉ có "notes" vẫn hợp lệ; không có bước thì khi chạy trả Bị chặn (không có gì để tự động hóa).
+    """
+
+    kind: AppKind
     notes: str = Field(default="", max_length=10000)
+    capabilities: dict[str, str | int | float | bool] = Field(default_factory=dict)
+    steps: list[AppStep] = Field(default_factory=list, max_length=100)
+
+    @field_validator("capabilities")
+    @classmethod
+    def _caps(cls, v: dict[str, str | int | float | bool]) -> dict[str, str | int | float | bool]:
+        for key, value in v.items():
+            bare = key.removeprefix("appium:")
+            if bare not in ALLOWED_CAPABILITIES:
+                raise ValueError(
+                    f"Capability '{key}' không được phép. Được dùng: {', '.join(sorted(ALLOWED_CAPABILITIES))}"
+                )
+            if (
+                bare == "app"
+                and isinstance(value, str)
+                and re.match(r"^[a-z][a-z0-9+.-]*://", value, re.I)
+            ):
+                raise ValueError(
+                    "Capability 'app' phải là đường dẫn trên máy chạy Appium, không dùng URL tải về"
+                )
+        return v
+
+
+# Giữ tên cũ cho mã đang import.
+UnsupportedDefinition = AppTestDefinition
 
 
 TestDefinition = Annotated[
-    ApiTestDefinition | WebTestDefinition | UnsupportedDefinition, Field(discriminator="kind")
+    ApiTestDefinition | WebTestDefinition | AppTestDefinition, Field(discriminator="kind")
 ]
 
 
-def has_side_effect(defn: ApiTestDefinition | WebTestDefinition | UnsupportedDefinition) -> bool:
+def has_side_effect(defn: ApiTestDefinition | WebTestDefinition | AppTestDefinition) -> bool:
     """API có phương thức ghi (POST/PUT/PATCH/DELETE) được coi là có side effect."""
     if isinstance(defn, ApiTestDefinition):
         return any(s.method not in SAFE_METHODS for s in defn.steps)

@@ -54,6 +54,9 @@ NO_RETRY_ERRORS = {
     "cancelled",
     "browser_unavailable",
     "invalid_definition",
+    "no_steps",
+    "appium_unavailable",
+    "appium_session",
 }
 COUNTER = {
     RunStatus.PASSED: "passed",

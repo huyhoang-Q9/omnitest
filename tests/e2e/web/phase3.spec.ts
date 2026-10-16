@@ -118,11 +118,23 @@ test("tạo test case API bằng trình soạn bước, sửa tạo phiên bản
   await expect(page.getByText("Đã khôi phục test case")).toBeVisible();
 });
 
-test("test desktop lưu được nhưng hiển thị rõ là chưa chạy được", async ({ page }) => {
+test("test desktop soạn được bước Appium và ghi rõ là thử nghiệm", async ({ page }, info) => {
   await login(page);
   await openDemoProject(page, "/test-cases");
   await page.getByRole("link", { name: "Tạo test case" }).click();
   await page.getByLabel("Loại test").selectOption("desktop_macos");
-  await expect(page.getByRole("note")).toContainText("chưa có adapter chạy thật");
+  await expect(page.getByRole("note")).toContainText("thử nghiệm");
   await expect(page.getByRole("note")).toContainText("Bị chặn");
+  await page.getByRole("button", { name: "Thêm bước" }).click();
+  await page.getByLabel(/^Phần tử/).fill("login_button");
+  await page.getByLabel("Hành động").selectOption("type");
+  await expect(page.getByLabel(/^Giá trị/)).toBeEnabled();
+  await expectNoHorizontalOverflow(page);
+  await page.screenshot({ path: `${shots}/${info.project.name}-app-editor.png`, fullPage: true });
+  await page.getByRole("button", { name: "Sửa dạng JSON" }).click();
+  const json = await page.getByLabel("Định nghĩa JSON").inputValue();
+  expect(JSON.parse(json)).toMatchObject({
+    kind: "desktop_macos",
+    steps: [{ action: "type", locator: { strategy: "accessibility_id", value: "login_button" } }],
+  });
 });

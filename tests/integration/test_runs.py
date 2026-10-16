@@ -259,10 +259,10 @@ async def test_private_network_blocked_and_unsupported_adapter(
     assert await _execute(run["id"]) == RunStatus.BLOCKED
     items = (await root.get(f"/api/runs/{run['id']}")).json()["items"]
     assert items[0]["status"] == "blocked" and items[0]["error_type"] == "blocked_target"
-    # Adapter chưa có driver thật: báo blocked, không bao giờ pass giả.
-    assert items[1]["status"] == "blocked" and items[1]["error_type"] == "not_supported"
+    # Test desktop chỉ có mô tả thủ công: báo blocked, không bao giờ pass giả.
+    assert items[1]["status"] == "blocked" and items[1]["error_type"] == "no_steps"
     adapters = {a["key"]: a for a in (await root.get("/api/adapters")).json()}
-    assert adapters["desktop-macos"]["status"] == "not_supported"
+    assert adapters["desktop-macos"]["status"] == "experimental"
     assert adapters["api-httpx"]["status"] == "supported"
 
 

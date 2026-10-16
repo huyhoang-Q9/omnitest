@@ -836,6 +836,59 @@ export interface components {
             /** Steps */
             steps: components["schemas"]["ApiStep"][];
         };
+        /** AppLocator */
+        AppLocator: {
+            /**
+             * Strategy
+             * @default accessibility_id
+             * @enum {string}
+             */
+            strategy: "accessibility_id" | "id" | "name" | "xpath" | "class_name" | "ios_predicate" | "ios_class_chain" | "android_uiautomator";
+            /** Value */
+            value: string;
+        };
+        /** AppStep */
+        AppStep: {
+            /** Name */
+            name: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "tap" | "type" | "clear" | "expect_visible" | "expect_hidden" | "expect_text" | "screenshot" | "back";
+            locator?: components["schemas"]["AppLocator"] | null;
+            /** Value */
+            value?: string | null;
+            /**
+             * Timeout Ms
+             * @default 10000
+             */
+            timeout_ms: number;
+        };
+        /**
+         * AppTestDefinition
+         * @description Desktop/Mobile chạy qua Appium server (URL lấy từ Base URL của môi trường).
+         *
+         *     Test cũ chỉ có "notes" vẫn hợp lệ; không có bước thì khi chạy trả Bị chặn (không có gì để tự động hóa).
+         */
+        AppTestDefinition: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Capabilities */
+            capabilities?: {
+                [key: string]: string | number | boolean;
+            };
+            /** Steps */
+            steps?: components["schemas"]["AppStep"][];
+        };
         /** ArtifactOut */
         ArtifactOut: {
             /**
@@ -2004,7 +2057,7 @@ export interface components {
                 [key: string]: unknown;
             };
             /** Definition */
-            definition: components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["UnsupportedDefinition"];
+            definition: components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"];
             /**
              * Side Effect
              * @default false
@@ -2138,7 +2191,7 @@ export interface components {
                 [key: string]: unknown;
             } | null;
             /** Definition */
-            definition?: (components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["UnsupportedDefinition"]) | null;
+            definition?: (components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"]) | null;
             /** Side Effect */
             side_effect?: boolean | null;
             /** Retry Count */
@@ -2176,22 +2229,6 @@ export interface components {
          * @enum {string}
          */
         TestType: "api" | "web" | "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
-        /**
-         * UnsupportedDefinition
-         * @description Desktop/Mobile: lưu được mô tả thủ công, nhưng chạy sẽ trả blocked cho tới khi có adapter thật.
-         */
-        UnsupportedDefinition: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            kind: "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
-            /**
-             * Notes
-             * @default
-             */
-            notes: string;
-        };
         /** UserCreate */
         UserCreate: {
             /** Email */

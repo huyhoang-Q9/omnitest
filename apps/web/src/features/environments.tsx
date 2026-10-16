@@ -123,7 +123,13 @@ export function EnvironmentFormDialog({
               </NativeSelect>
             </FormField>
           </div>
-          <FormField id="e-url" label="Base URL" required error={errors.base_url?.message}>
+          <FormField
+            id="e-url"
+            label="Base URL"
+            required
+            error={errors.base_url?.message}
+            hint="Với test Desktop/Mobile: địa chỉ Appium server, VD http://appium-host:4723. Appium ở mạng nội bộ thì cần Admin bật cho phép mạng nội bộ."
+          >
             <Input id="e-url" inputMode="url" aria-invalid={!!errors.base_url} {...form.register("base_url")} />
           </FormField>
           <FormField

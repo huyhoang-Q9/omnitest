@@ -9,8 +9,12 @@ import { Input, NativeSelect, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
+  APP_ACTION_LABEL,
+  APP_NEEDS_LOCATOR,
+  APP_NEEDS_VALUE,
   ASSERTION_LABEL,
   COMPARATOR_LABEL,
+  LOCATOR_STRATEGY_LABEL,
   WEB_ACTION_LABEL,
   WEB_NEEDS_SELECTOR,
   WEB_NEEDS_VALUE,
@@ -471,6 +475,107 @@ function WebStepFields({ step, onChange, id }: { step: Obj; onChange: (s: Obj) =
   );
 }
 
+// ---------- Desktop / Mobile (Appium) ----------
+
+function AppStepFields({ step, onChange, id }: { step: Obj; onChange: (s: Obj) => void; id: string }) {
+  const action = String(step.action ?? "tap");
+  const needsLocator = APP_NEEDS_LOCATOR.has(action);
+  const needsValue = APP_NEEDS_VALUE.has(action);
+  const locator = (step.locator as Obj | null | undefined) ?? null;
+  const setAction = (a: string) => {
+    const next: Obj = { ...step, action: a };
+    if (APP_NEEDS_LOCATOR.has(a) && !locator) next.locator = { strategy: "accessibility_id", value: "" };
+    if (!APP_NEEDS_LOCATOR.has(a)) delete next.locator;
+    if (!APP_NEEDS_VALUE.has(a)) delete next.value;
+    onChange(next);
+  };
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-name`}>Tên bước</Label>
+        <Input id={`${id}-name`} value={String(step.name ?? "")} onChange={(e) => onChange({ ...step, name: e.target.value })} />
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-action`}>Hành động</Label>
+        <NativeSelect id={`${id}-action`} value={action} onChange={(e) => setAction(e.target.value)}>
+          {Object.entries(APP_ACTION_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
+        </NativeSelect>
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-strategy`}>Cách tìm phần tử</Label>
+        <NativeSelect
+          id={`${id}-strategy`}
+          disabled={!needsLocator}
+          value={String(locator?.strategy ?? "accessibility_id")}
+          onChange={(e) => onChange({ ...step, locator: { ...(locator ?? { value: "" }), strategy: e.target.value } })}
+        >
+          {Object.entries(LOCATOR_STRATEGY_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
+        </NativeSelect>
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-loc`}>Phần tử{needsLocator && <span className="text-status-failed"> *</span>}</Label>
+        <Input
+          id={`${id}-loc`}
+          placeholder="login_button, //XCUIElementTypeButton[@name='Đăng nhập']"
+          disabled={!needsLocator}
+          value={String(locator?.value ?? "")}
+          onChange={(e) => onChange({ ...step, locator: { strategy: "accessibility_id", ...(locator ?? {}), value: e.target.value } })}
+        />
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-val`}>Giá trị{needsValue && <span className="text-status-failed"> *</span>}</Label>
+        <Input
+          id={`${id}-val`}
+          placeholder="Có thể dùng {{BIEN}}"
+          disabled={!needsValue}
+          value={String(step.value ?? "")}
+          onChange={(e) => onChange({ ...step, value: e.target.value })}
+        />
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${id}-to`}>Chờ (ms)</Label>
+        <Input id={`${id}-to`} type="number" min={100} max={120000} value={String(step.timeout_ms ?? 10000)} onChange={(e) => onChange({ ...step, timeout_ms: Number(e.target.value) })} />
+      </div>
+    </div>
+  );
+}
+
+function AppHeader({ value, onChange }: { value: Definition; onChange: (d: Definition) => void }) {
+  const caps = Object.fromEntries(Object.entries((value.capabilities as Obj | undefined) ?? {}).map(([k, v]) => [k, formatLoose(v)]));
+  return (
+    <div className="grid min-w-0 flex-1 basis-full gap-4">
+      <div role="note" className="rounded-md border border-status-blocked/40 bg-status-blocked/10 p-3 text-sm">
+        Desktop/Mobile chạy qua <strong>Appium</strong> và đang ở mức <strong>thử nghiệm</strong>. Base URL của môi trường là địa chỉ Appium
+        server (VD http://appium-host:4723), cần có driver và thiết bị hoặc máy thật. Thiếu một trong các thứ đó, hoặc test chưa có bước,
+        kết quả sẽ là <strong>Bị chặn</strong>, không bao giờ báo đạt giả.
+      </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor="def-notes">Ghi chú / bước thủ công</Label>
+        <Textarea id="def-notes" rows={3} value={String(value.notes ?? "")} onChange={(e) => onChange({ ...value, notes: e.target.value })} />
+      </div>
+      <KeyValueEditor
+        idPrefix="def-cap"
+        label="Capability Appium"
+        keyPlaceholder="appPackage, bundleId, app, udid..."
+        value={caps}
+        onChange={(v) => onChange({ ...value, capabilities: Object.fromEntries(Object.entries(v).map(([k, x]) => [k, parseLoose(x) ?? ""])) })}
+      />
+      <p className="-mt-2 text-xs text-muted-foreground">
+        Chỉ cho phép capability chọn ứng dụng và thiết bị; "app" là đường dẫn trên máy chạy Appium, không dùng URL. platformName và
+        automationName được đặt tự động theo loại test.
+      </p>
+    </div>
+  );
+}
+
 // ---------- Tổng ----------
 
 export function DefinitionEditor({ value, onChange }: { value: Definition; onChange: (d: Definition) => void }) {
@@ -487,20 +592,7 @@ export function DefinitionEditor({ value, onChange }: { value: Definition; onCha
     setSteps(s);
   };
 
-  if (kind !== "api" && kind !== "web") {
-    return (
-      <div className="grid gap-3">
-        <div role="note" className="rounded-md border border-status-blocked/40 bg-status-blocked/10 p-3 text-sm">
-          Loại test này chưa có adapter chạy thật (cần driver và máy thật ở giai đoạn sau). Bạn có thể lưu mô tả các bước thủ công;
-          khi chạy, kết quả sẽ là <strong>Bị chặn</strong>, không bao giờ báo đạt giả.
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="def-notes">Mô tả các bước</Label>
-          <Textarea id="def-notes" rows={8} value={String(value.notes ?? "")} onChange={(e) => onChange({ ...value, notes: e.target.value })} />
-        </div>
-      </div>
-    );
-  }
+  const isApp = kind !== "api" && kind !== "web";
 
   const toggleJson = () => {
     if (!jsonMode) {
@@ -550,6 +642,8 @@ export function DefinitionEditor({ value, onChange }: { value: Definition; onCha
               </NativeSelect>
             </div>
           </div>
+        ) : isApp && !jsonMode ? (
+          <AppHeader value={value} onChange={onChange} />
         ) : (
           <span />
         )}
@@ -576,13 +670,19 @@ export function DefinitionEditor({ value, onChange }: { value: Definition; onCha
                 key={`${rev}-${i}`}
                 index={i}
                 total={steps.length}
-                title={`${String(s.name ?? "")}${kind === "api" ? ` · ${String(s.method ?? "GET")} ${String(s.url ?? "")}` : ` · ${WEB_ACTION_LABEL[String(s.action)] ?? ""}`}`}
+                title={`${String(s.name ?? "")}${
+                  kind === "api"
+                    ? ` · ${String(s.method ?? "GET")} ${String(s.url ?? "")}`
+                    : ` · ${(isApp ? APP_ACTION_LABEL : WEB_ACTION_LABEL)[String(s.action)] ?? ""}`
+                }`}
                 onMove={(d) => restructure(moveItem(steps, i, d))}
                 onDuplicate={() => restructure([...steps.slice(0, i + 1), structuredClone(s), ...steps.slice(i + 1)])}
                 onRemove={() => restructure(steps.filter((_, j) => j !== i))}
               >
                 {kind === "api" ? (
                   <ApiStepFields id={`s${i}`} step={s} onChange={(ns) => setSteps(steps.map((x, j) => (j === i ? ns : x)))} />
+                ) : isApp ? (
+                  <AppStepFields id={`s${i}`} step={s} onChange={(ns) => setSteps(steps.map((x, j) => (j === i ? ns : x)))} />
                 ) : (
                   <WebStepFields id={`s${i}`} step={s} onChange={(ns) => setSteps(steps.map((x, j) => (j === i ? ns : x)))} />
                 )}
@@ -598,7 +698,9 @@ export function DefinitionEditor({ value, onChange }: { value: Definition; onCha
                 ...steps,
                 kind === "api"
                   ? { name: `Bước ${steps.length + 1}`, method: "GET", url: "/", assertions: [{ type: "status", equals: 200 }] }
-                  : { name: `Bước ${steps.length + 1}`, action: "click", selector: "" },
+                  : isApp
+                    ? { name: `Bước ${steps.length + 1}`, action: "tap", locator: { strategy: "accessibility_id", value: "" } }
+                    : { name: `Bước ${steps.length + 1}`, action: "click", selector: "" },
               ])
             }
           >
