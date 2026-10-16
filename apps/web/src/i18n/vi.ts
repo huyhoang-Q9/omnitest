@@ -15,6 +15,7 @@ export const vi = {
     liveExecution: "Đang thực thi",
     reports: "Báo cáo",
     aiAssistant: "Trợ lý AI",
+    help: "Hướng dẫn sử dụng",
     settings: "Cài đặt",
     logout: "Đăng xuất",
     openMenu: "Mở menu",

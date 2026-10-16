@@ -17,6 +17,7 @@ export const en: Translation = {
     liveExecution: "Live execution",
     reports: "Reports",
     aiAssistant: "AI assistant",
+    help: "User guide",
     settings: "Settings",
     logout: "Sign out",
     openMenu: "Open menu",

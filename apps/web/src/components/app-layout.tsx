@@ -1,4 +1,5 @@
 import {
+  BookOpen,
   Bot,
   ClipboardList,
   FileBarChart,
@@ -53,6 +54,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { to: "/projects", key: "projects", icon: FolderKanban },
       { to: "/environments", key: "environments", icon: Server },
       { to: "/settings", key: "settings", icon: Settings },
+      { to: "/help", key: "help", icon: BookOpen },
     ],
   },
 ];

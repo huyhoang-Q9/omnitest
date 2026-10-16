@@ -45,6 +45,8 @@ jobs:
       - run: uv run pytest -q -rs
         env:
           OMNITEST_TEST_DATABASE_URL: postgresql+asyncpg://omnitest:omnitest@127.0.0.1:5432/omnitest_test
+      - name: Tài liệu hướng dẫn sử dụng khớp nội dung trang Hướng dẫn
+        run: python3 infra/scripts/build_guide.py --check
       - name: Contract OpenAPI không lệch
         run: |
           uv run python infra/scripts/export_openapi.py

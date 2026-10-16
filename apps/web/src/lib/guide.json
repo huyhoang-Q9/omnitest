@@ -1,0 +1,321 @@
+{
+  "title": "Hướng dẫn sử dụng OmniTest",
+  "intro": "Tài liệu đi theo đúng thứ tự một người kiểm thử làm việc: đăng nhập, kiểm thử một hệ thống, đọc kết quả, rồi soạn và quản lý test. Mỗi phần có ảnh chụp màn hình thật và nút mở đúng màn hình đó để vừa đọc vừa làm.",
+  "sections": [
+    {
+      "id": "bat-dau",
+      "group": "Bắt đầu",
+      "title": "Mở OmniTest trên GitHub Codespaces",
+      "summary": "Chạy toàn bộ hệ thống trong trình duyệt, không cần cài đặt gì trên máy.",
+      "steps": [
+        "Mở trang repo trên GitHub, bấm nút **Open in GitHub Codespaces** ở đầu README rồi bấm **Create codespace**.",
+        "Chờ codespace mở. Script khởi động tự chạy ngầm; lần đầu build mất vài phút.",
+        "Ở khung Explorer bên trái, mở file **omnitest-dang-nhap.txt** để lấy Email và Mật khẩu. Chỉ đăng nhập khi dòng đầu file ghi **sẵn sàng**.",
+        "Mở tab **PORTS** (cạnh Terminal), bấm biểu tượng quả địa cầu ở cổng **8080 (OmniTest)** để mở giao diện.",
+        "Không thấy file hoặc file ghi \"ĐANG KHỞI ĐỘNG\" quá lâu: mở Terminal (☰ > Terminal > New Terminal), chạy `bash .devcontainer/start.sh` và chờ dòng \"Đăng nhập OmniTest\" in ra."
+      ],
+      "tips": [
+        "Mật khẩu sinh ngẫu nhiên cho từng codespace và không được đưa lên GitHub.",
+        "Cổng 8080 để chế độ Private: chỉ tài khoản GitHub của bạn mở được.",
+        "Dừng codespace khi không dùng để tiết kiệm hạn mức miễn phí."
+      ]
+    },
+    {
+      "id": "dang-nhap",
+      "group": "Bắt đầu",
+      "title": "Đăng nhập",
+      "summary": "Mỗi người dùng có tài khoản riêng do quản trị hệ thống tạo.",
+      "route": "/login",
+      "image": "01-dang-nhap.jpg",
+      "steps": [
+        "Nhập **Email** và **Mật khẩu** được cấp.",
+        "Bấm **Đăng nhập**. Sau khi đăng nhập, bạn vào trang chủ Cổng kiểm thử.",
+        "Bấm **Đăng xuất** ở góc trên bên phải khi dùng xong."
+      ],
+      "tips": [
+        "Nhập sai mật khẩu nhiều lần liên tiếp, tài khoản bị khóa tạm vài phút để chống dò mật khẩu.",
+        "Quên mật khẩu: liên hệ quản trị hệ thống. Phiên bản hiện tại chưa có chức năng tự đổi hoặc đặt lại mật khẩu trên giao diện."
+      ]
+    },
+    {
+      "id": "trang-chu",
+      "group": "Bắt đầu",
+      "title": "Trang chủ: Cổng kiểm thử",
+      "summary": "Điểm xuất phát cho mọi việc: kiểm thử ngay, xem hệ thống của bạn và các lần chạy gần đây.",
+      "route": "/",
+      "image": "02-trang-chu.jpg",
+      "steps": [
+        "Khung đầu trang hiển thị số liệu thật: tỷ lệ đạt 14 ngày, số lần đang chạy, số test case, số lần chạy.",
+        "Bấm **Kiểm thử ngay** để vào luồng kiểm thử 3 bước (nút này cũng có ở thanh trên cùng mọi trang).",
+        "Khu **Bạn muốn làm gì?** có 4 lối tắt: Kiểm tra nhanh, Chạy bộ test, Soạn test case, Báo cáo.",
+        "Khu **Hệ thống của bạn** liệt kê môi trường trong các dự án bạn tham gia; bấm **Kiểm thử** cạnh hệ thống nào để kiểm thử hệ thống đó.",
+        "Khu **Lần chạy gần đây**: bấm tên lần chạy để xem chi tiết."
+      ]
+    },
+    {
+      "id": "kiem-thu",
+      "group": "Kiểm thử hệ thống",
+      "title": "Kiểm thử một hệ thống trong 3 bước",
+      "summary": "Cách nhanh nhất để kiểm thử: chọn hệ thống, chọn nội dung, bấm chạy.",
+      "route": "/test",
+      "image": "03-kiem-thu-buoc-1-2.jpg",
+      "steps": [
+        "**Bước 1, chọn hệ thống:** chọn **Dự án**, rồi bấm vào thẻ hệ thống (môi trường) cần kiểm thử. Thẻ đang chọn có viền màu.",
+        "Chưa có hệ thống cần kiểm thử: bấm **Thêm hệ thống khác**, nhập tên, loại (Dev, Test, UAT, Staging) và URL rồi bấm **Thêm** (cần vai trò Manager).",
+        "**Bước 2, chọn nội dung:** **Kiểm tra nhanh** (hệ thống có phản hồi, trang web mở được, kèm ảnh chụp), **Chạy bộ test** (chọn một suite) hoặc **Chọn test case** (tích từng test).",
+        "Lần đầu dùng Kiểm tra nhanh trong một dự án: bấm **Tạo bộ kiểm tra nhanh**. OmniTest tạo 2 test case thường (gắn nhãn kiem-tra-nhanh) mà bạn xem và sửa được ở trang Test case.",
+        "**Bước 3:** kiểm tra lại tóm tắt Dự án, Hệ thống, Nội dung rồi bấm **Bắt đầu kiểm thử**. Trang kết quả mở ngay và tự cập nhật."
+      ],
+      "tips": [
+        "Dấu tích xanh ở đầu mỗi bước cho biết bước đó đã đủ thông tin.",
+        "Vai trò Viewer chỉ xem được kết quả, nút Bắt đầu kiểm thử bị khóa."
+      ]
+    },
+    {
+      "id": "xac-nhan",
+      "group": "Kiểm thử hệ thống",
+      "title": "Xác nhận trước khi chạy",
+      "summary": "OmniTest hỏi lại khi lần chạy có thể ảnh hưởng tới hệ thống thật.",
+      "route": "/test?mode=suite",
+      "image": "07-xac-nhan-truoc-khi-chay.jpg",
+      "steps": [
+        "Khi bấm **Bắt đầu kiểm thử** (hoặc **Chạy**), nếu có rủi ro, khung vàng **Cần xác nhận trước khi chạy** hiện ra kèm lý do cụ thể.",
+        "Đọc kỹ lý do: môi trường UAT/Staging, test có thay đổi dữ liệu (thêm, sửa, xóa), hoặc test script code chạy trong sandbox.",
+        "Đồng ý thì bấm nút đỏ **Tôi xác nhận, chạy**. Không đồng ý thì đổi lựa chọn hoặc rời trang, không có gì được chạy."
+      ],
+      "tips": [
+        "Mọi lần chạy cần xác nhận đều được ghi vào nhật ký (audit log) kèm người xác nhận.",
+        "Test có thay đổi dữ liệu không tự chạy lại khi lỗi, để tránh tạo dữ liệu trùng."
+      ]
+    },
+    {
+      "id": "ket-qua",
+      "group": "Kết quả",
+      "title": "Đọc kết quả một lần chạy",
+      "summary": "Tiến độ, kết quả từng test case, từng bước, ảnh chụp và log.",
+      "route": "/test-runs",
+      "image": "05-ket-qua-lan-chay.jpg",
+      "steps": [
+        "Thanh tiến độ cho biết số test đã xong, số đạt, số không đạt. Trang tự cập nhật khi worker đang chạy, không cần tải lại.",
+        "Mỗi dòng là một test case với loại (API, Web), thời gian chạy và trạng thái: **Đạt**, **Không đạt**, **Lỗi**, **Bị chặn**, **Bỏ qua**, **Đã hủy**.",
+        "Bấm vào một test case để mở danh sách bước; bấm vào từng bước để xem chi tiết, log, ảnh chụp màn hình.",
+        "Tải báo cáo của lần chạy bằng các nút **Báo cáo HTML**, **Excel**, **CSV** ở góc phải.",
+        "Lần chạy đang chờ hoặc đang chạy có nút **Hủy lần chạy**; trình duyệt và tiến trình kiểm thử được dừng hẳn."
+      ],
+      "tips": [
+        "Bị chặn nghĩa là chưa đủ điều kiện để chạy (VD hệ thống trỏ tới mạng nội bộ chưa được cho phép, chưa cài driver). OmniTest không bao giờ báo Đạt khi chưa chạy thật.",
+        "Test Web không đạt có kèm ảnh chụp và file trace Playwright để xem lại từng thao tác."
+      ]
+    },
+    {
+      "id": "chi-tiet-buoc",
+      "group": "Kết quả",
+      "title": "Xem từng bước và ảnh chụp màn hình",
+      "summary": "Bằng chứng chi tiết cho từng bước kiểm thử.",
+      "route": "/test-runs",
+      "image": "06-chi-tiet-buoc-anh-chup.jpg",
+      "steps": [
+        "Mở một test case trong lần chạy, các bước hiện theo thứ tự với thời gian và trạng thái.",
+        "Bấm vào bước có ảnh (VD **Chụp màn hình**) để xem ảnh ngay trên trang; bấm tên file ảnh để mở cỡ lớn.",
+        "Với test API, mở bước để xem request, response và từng điều kiện kiểm tra đạt hay không."
+      ],
+      "tips": [
+        "Mật khẩu, token và biến bí mật được che (***) trong log, ảnh trace và báo cáo."
+      ]
+    },
+    {
+      "id": "lan-chay",
+      "group": "Kết quả",
+      "title": "Lịch sử lần chạy và theo dõi trực tiếp",
+      "summary": "Tìm lại mọi lần chạy cũ và xem những lần đang chạy.",
+      "route": "/test-runs",
+      "image": "09-danh-sach-lan-chay.jpg",
+      "steps": [
+        "Menu **Lần chạy**: chọn dự án, lọc theo **Trạng thái**, bấm tên lần chạy để mở chi tiết.",
+        "Menu **Đang thực thi**: danh sách các lần đang chờ hoặc đang chạy trong mọi dự án của bạn, tự cập nhật mỗi 2 giây."
+      ]
+    },
+    {
+      "id": "bao-cao",
+      "group": "Kết quả",
+      "title": "Báo cáo tổng hợp",
+      "summary": "Tỷ lệ đạt theo ngày, môi trường, suite và test case; xuất HTML, CSV, Excel.",
+      "route": "/reports",
+      "image": "16-bao-cao.jpg",
+      "steps": [
+        "Chọn dự án, lọc theo **Môi trường**, **Suite**, **Từ ngày**, **Đến ngày**.",
+        "Xem các bảng **Theo ngày**, **Theo môi trường**, **Theo suite**, **Theo test case** và biểu đồ.",
+        "Bấm **HTML**, **CSV** hoặc **Excel** để tải báo cáo đúng với bộ lọc đang chọn."
+      ],
+      "tips": [
+        "Số liệu lấy trực tiếp từ kết quả đã chạy, không ước tính."
+      ]
+    },
+    {
+      "id": "test-case",
+      "group": "Thiết kế kiểm thử",
+      "title": "Danh sách test case",
+      "summary": "Tìm, lọc, chạy, nhập và xuất test case của dự án.",
+      "route": "/test-cases",
+      "image": "11-test-case.jpg",
+      "steps": [
+        "Chọn dự án; dùng ô **Tìm kiếm**, bộ lọc **Loại**, **Mức ưu tiên**, **Trạng thái** để thu hẹp danh sách.",
+        "Tích chọn một hoặc nhiều test rồi bấm **Chạy test đã chọn**.",
+        "**Nhập**: tải file CSV hoặc Excel theo mẫu; lỗi được báo theo từng dòng, chưa ghi gì nếu còn lỗi.",
+        "**Từ OpenAPI**: tải tài liệu OpenAPI 3 (.json, .yaml) để sinh sẵn test case API cho từng endpoint.",
+        "Bật **Hiện test case đã xóa** để xem và khôi phục test đã xóa."
+      ]
+    },
+    {
+      "id": "soan-test-api",
+      "group": "Thiết kế kiểm thử",
+      "title": "Soạn test case API",
+      "summary": "Gọi API theo từng bước, kiểm tra mã phản hồi, nội dung, header, thời gian.",
+      "route": "/test-cases/new",
+      "image": "12-tao-test-case-api.jpg",
+      "steps": [
+        "Bấm **Tạo test case** (hoặc **Soạn test case** ở trang chủ rồi chọn dự án).",
+        "Phần **Thông tin**: nhập **Tiêu đề**, chọn **Loại test** = API, mức ưu tiên, trạng thái, nhãn.",
+        "Phần **Các bước**: chọn **Phương thức** (GET, POST...), nhập **URL** tương đối theo Base URL của môi trường (VD /api/health).",
+        "Thêm **Xác thực**, header, **Body** nếu cần. Dùng biến môi trường dạng {{TEN_BIEN}} thay cho mật khẩu, token.",
+        "Bấm **Thêm kiểm tra** để khai báo điều kiện: mã phản hồi, giá trị JSON, JSON schema, header, thời gian phản hồi.",
+        "Muốn dùng kết quả bước này cho bước sau: **Thêm biến** để trích giá trị (VD token) từ response.",
+        "Phần **Thực thi**: bật **Có thay đổi dữ liệu** nếu test thêm, sửa, xóa dữ liệu; chọn số lần **Thử lại khi lỗi**.",
+        "Bấm **Tạo test case** để lưu."
+      ],
+      "tips": [
+        "Ai thích soạn bằng JSON có thể bấm **Sửa dạng JSON**; nội dung được kiểm tra trước khi lưu."
+      ]
+    },
+    {
+      "id": "soan-test-web",
+      "group": "Thiết kế kiểm thử",
+      "title": "Soạn test case Web",
+      "summary": "Thao tác trên trình duyệt như người dùng thật: mở trang, nhập, bấm, kiểm tra.",
+      "route": "/test-cases",
+      "image": "13-sua-test-case-web.jpg",
+      "steps": [
+        "Chọn **Loại test** = Web; chọn **Trình duyệt** và chế độ **Ghi trace**.",
+        "Mỗi bước gồm **Tên bước**, **Hành động** (mở trang, bấm, nhập, chọn, chờ, kiểm tra hiển thị, nội dung, URL, tiêu đề, chụp màn hình), **Phần tử** và **Giá trị**.",
+        "**Phần tử** viết theo cách Playwright tìm: label=Email, role=button[name=\"Đăng nhập\"], text=..., hoặc CSS.",
+        "Dùng các nút bên phải mỗi bước để đưa lên, đưa xuống, nhân bản, xóa bước; **Thêm bước** ở cuối danh sách.",
+        "Bấm **Lưu thay đổi**. Mỗi lần lưu tạo một phiên bản mới, xem ở **Lịch sử phiên bản**.",
+        "Bấm **Chạy** ở đầu trang để chạy ngay test này trên một môi trường."
+      ]
+    },
+    {
+      "id": "test-suite",
+      "group": "Thiết kế kiểm thử",
+      "title": "Bộ test (suite)",
+      "summary": "Gom test case theo mục đích (smoke, hồi quy) để chạy cùng nhau.",
+      "route": "/test-suites",
+      "image": "15-chi-tiet-suite.jpg",
+      "steps": [
+        "Trang **Test suite**: bấm **Tạo suite**, đặt tên và mô tả.",
+        "Mở suite, bấm **Thêm test case**, tìm và chọn test cần thêm.",
+        "Sắp xếp thứ tự chạy bằng nút lên, xuống rồi bấm **Lưu thứ tự**; bỏ test khỏi suite bằng nút bỏ ở cuối dòng.",
+        "Bấm **Chạy suite** để chạy cả bộ, hoặc chọn suite ở bước 2 của Kiểm thử hệ thống."
+      ],
+      "tips": [
+        "Xóa suite chỉ xóa nhóm, không xóa test case và không mất lịch sử chạy."
+      ]
+    },
+    {
+      "id": "tro-ly-ai",
+      "group": "Thiết kế kiểm thử",
+      "title": "Trợ lý AI (tùy chọn)",
+      "summary": "Đề xuất test case từ mô tả yêu cầu và phân tích nguyên nhân lỗi.",
+      "route": "/ai",
+      "image": "22-tro-ly-ai.jpg",
+      "steps": [
+        "Quản trị hệ thống cấu hình nhà cung cấp AI trên máy chủ; Admin dự án bật **Cho phép dùng Trợ lý AI** trong trang dự án.",
+        "Nhập mô tả yêu cầu, chọn loại test, bấm đề xuất. Xem giả định và mức độ chắc chắn của từng đề xuất.",
+        "Tích các đề xuất muốn giữ rồi lưu: test được tạo ở trạng thái Nháp để bạn rà soát trước khi dùng.",
+        "Ở trang kết quả, test không đạt có nút phân tích lỗi bằng AI."
+      ],
+      "tips": [
+        "AI chỉ đề xuất, không tự lưu, không tự chạy test. Khi chưa cấu hình, trang ghi rõ \"AI chưa được cấu hình\" và mọi chức năng khác vẫn dùng bình thường."
+      ]
+    },
+    {
+      "id": "moi-truong",
+      "group": "Quản lý",
+      "title": "Môi trường và biến bí mật",
+      "summary": "Khai báo địa chỉ hệ thống (Dev, Test, UAT, Staging) và biến dùng khi chạy test.",
+      "route": "/environments",
+      "image": "18-chi-tiet-moi-truong.jpg",
+      "steps": [
+        "Trang **Môi trường**: chọn dự án, bấm **Thêm môi trường**, nhập tên, loại, **Base URL** và các host đích được phép.",
+        "Mở một môi trường, phần **Biến môi trường**: bấm **Thêm biến** để khai báo tài khoản test, token... Bật **Secret** cho mật khẩu, token, API key (không đổi lại được sau khi tạo).",
+        "Trong test, dùng {{TEN_BIEN}} để lấy giá trị biến của môi trường đang chạy.",
+        "Môi trường UAT, Staging mặc định yêu cầu xác nhận trước khi chạy."
+      ],
+      "tips": [
+        "Giá trị bí mật được mã hóa, không bao giờ hiển thị lại sau khi lưu, không xuất hiện trong log hay báo cáo.",
+        "Địa chỉ mạng nội bộ (localhost, 10.x, 192.168.x...) bị chặn để chống tấn công SSRF, trừ khi Admin dự án cho phép trong cấu hình môi trường."
+      ]
+    },
+    {
+      "id": "du-an",
+      "group": "Quản lý",
+      "title": "Dự án, thành viên và phân quyền",
+      "summary": "Mỗi dự án có môi trường, test và thành viên riêng.",
+      "route": "/projects",
+      "image": "20-chi-tiet-du-an.jpg",
+      "steps": [
+        "Quản trị hệ thống bấm **Tạo dự án**, nhập mã (VD SHOP) và tên.",
+        "Mở dự án, tab **Thành viên**: thêm người dùng theo email và chọn vai trò.",
+        "Vai trò: **Viewer** chỉ xem; **Tester** chạy test; **Manager** soạn test, suite, môi trường; **Admin** quản lý thành viên, bật AI, bật script code, cho phép mạng nội bộ.",
+        "Tab **Nhật ký** ghi lại thao tác quan trọng trong dự án: sửa biến bí mật, xóa dữ liệu, chạy trên UAT/Staging, bật AI hay script code.",
+        "**Lưu trữ** dự án khi không dùng nữa: dự án chuyển sang chỉ xem, dữ liệu vẫn giữ."
+      ],
+      "tips": [
+        "Người ngoài dự án không thấy bất kỳ dữ liệu nào của dự án."
+      ]
+    },
+    {
+      "id": "so-lieu",
+      "group": "Quản lý",
+      "title": "Số liệu tổng quan",
+      "summary": "Bức tranh chung: kết quả theo ngày, hoạt động gần đây, test cần chú ý.",
+      "route": "/dashboard",
+      "image": "21-so-lieu-tong-quan.jpg",
+      "steps": [
+        "Xem biểu đồ **Kết quả 14 ngày gần nhất** và tỷ lệ đạt.",
+        "Khu **Cần chú ý** liệt kê test có kết quả gần nhất là lỗi hoặc bị chặn; bấm để mở lần chạy đó.",
+        "Khu **Hoạt động gần đây** cho biết ai vừa làm gì trong các dự án của bạn."
+      ]
+    },
+    {
+      "id": "cai-dat",
+      "group": "Quản lý",
+      "title": "Cài đặt và tài khoản người dùng",
+      "summary": "Thông tin tài khoản; quản trị hệ thống tạo tài khoản người dùng.",
+      "route": "/settings",
+      "image": "23-cai-dat.jpg",
+      "steps": [
+        "Phần **Tài khoản của bạn** hiển thị họ tên, email, ngôn ngữ giao diện.",
+        "Quản trị hệ thống: phần **Người dùng** liệt kê tài khoản và lần đăng nhập gần nhất; bấm **Tạo tài khoản**, nhập email, họ tên, mật khẩu ban đầu rồi gửi mật khẩu cho người dùng qua kênh an toàn.",
+        "Sau khi tạo tài khoản, thêm người dùng vào dự án ở trang Dự án, tab Thành viên."
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "q": "Kết quả \"Bị chặn\" nghĩa là gì?",
+      "a": "Test chưa được chạy vì thiếu điều kiện: hệ thống trỏ tới mạng nội bộ chưa được cho phép, host đích không nằm trong danh sách cho phép, test Desktop/Mobile chưa có Appium và thiết bị, hoặc script code chưa được bật. Mở test case trong lần chạy để đọc lý do cụ thể."
+    },
+    {
+      "q": "Tại sao không bấm được Bắt đầu kiểm thử?",
+      "a": "Còn thiếu hệ thống ở bước 1 hoặc nội dung ở bước 2 (bước chưa có dấu tích xanh), hoặc bạn đang có vai trò Viewer."
+    },
+    {
+      "q": "Kiểm thử hệ thống của tôi trên Internet bị chặn?",
+      "a": "Kiểm tra Base URL của môi trường có đúng https://... và host có nằm trong danh sách host đích được phép (nếu môi trường có khai báo danh sách này)."
+    },
+    {
+      "q": "Kiểm tra nhanh báo Không đạt ở bước \"hệ thống phản hồi\"?",
+      "a": "Trang gốc của hệ thống trả mã khác 2xx (sau khi theo chuyển hướng) hoặc chậm hơn 5 giây. Mở bước để xem mã phản hồi thực tế; có thể sửa test \"Kiểm tra nhanh: hệ thống phản hồi\" ở trang Test case cho phù hợp với hệ thống."
+    }
+  ]
+}

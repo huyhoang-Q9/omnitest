@@ -17,6 +17,7 @@ const ProjectsPage = page(() => import("@/pages/ProjectsPage"), "ProjectsPage");
 const ReportsPage = page(() => import("@/pages/ReportsPage"), "ReportsPage");
 const PortalPage = page(() => import("@/pages/PortalPage"), "PortalPage");
 const TestWizardPage = page(() => import("@/pages/TestWizardPage"), "TestWizardPage");
+const GuidePage = page(() => import("@/pages/GuidePage"), "GuidePage");
 const LivePage = page(() => import("@/pages/LivePage"), "LivePage");
 const RunDetailPage = page(() => import("@/pages/RunDetailPage"), "RunDetailPage");
 const SettingsPage = page(() => import("@/pages/SettingsPage"), "SettingsPage");
@@ -68,6 +69,7 @@ export default function App() {
         <Route path="reports" element={<ReportsPage />} />
         <Route path="ai" element={<AIAssistantPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="help" element={<GuidePage />} />
         <Route path="*" element={<ErrorState message="Không tìm thấy trang." />} />
       </Route>
     </Routes>

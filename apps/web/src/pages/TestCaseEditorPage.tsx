@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { toast } from "sonner";
 import { FormField } from "@/components/form-field";
 import { PageHeader } from "@/components/page-header";
-import { ErrorState, LoadingState } from "@/components/states";
+import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
   api,
   ApiError,
   can,
+  type Page,
   type Priority,
   type Project,
   type TestCase,
@@ -105,15 +106,44 @@ function VersionsPanel({ caseId }: { caseId: string }) {
   );
 }
 
+/** Mở "Soạn test case" từ trang chủ chưa kèm dự án: chọn dự án mình có quyền soạn (Manager trở lên). */
+function ChooseProject({ onChoose }: { onChoose: (projectId: string) => void }) {
+  const q = useQuery({ queryKey: ["projects", { all: true }], queryFn: () => api<Page<Project>>("/api/projects?page_size=100") });
+  const editable = q.data?.items.filter((p) => can(p.my_role, "manager") && !p.is_archived) ?? [];
+  return (
+    <>
+      <PageHeader title="Tạo test case" description="Chọn dự án sẽ chứa test case mới." />
+      {q.isPending && <LoadingState />}
+      {q.isError && <ErrorState message={q.error.message} onRetry={() => q.refetch()} />}
+      {q.data && editable.length === 0 && (
+        <EmptyState title="Bạn chưa có dự án nào được quyền soạn test case" description="Cần vai trò Manager trở lên trong dự án." />
+      )}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {editable.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => onChoose(p.id)}
+            className="rounded-xl border bg-card p-4 text-left shadow-xs transition hover:border-primary/50 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <span className="block font-mono text-xs text-muted-foreground">{p.key}</span>
+            <span className="block font-medium">{p.name}</span>
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function TestCaseEditorPage() {
   const { caseId } = useParams();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const tcq = useQuery({ queryKey: ["test-case", caseId], queryFn: () => api<TestCase>(`/api/test-cases/${caseId}`), enabled: !!caseId });
   const projectId = caseId ? tcq.data?.project_id : params.get("project");
   const pq = useQuery({ queryKey: ["project", projectId], queryFn: () => api<Project>(`/api/projects/${projectId}`), enabled: !!projectId });
   if (caseId && tcq.isPending) return <LoadingState rows={6} />;
   if (caseId && tcq.isError) return <ErrorState message={tcq.error.message} onRetry={() => tcq.refetch()} />;
-  if (!projectId) return <ErrorState message="Chưa chọn dự án. Hãy tạo test case từ trang danh sách." />;
+  if (!projectId) return <ChooseProject onChoose={(id) => setParams({ project: id }, { replace: true })} />;
   const tc = tcq.data;
   // Dựng lại form theo phiên bản máy chủ (sau khi lưu, khôi phục...) thay vì đồng bộ state bằng effect.
   return <TestCaseEditor key={tc ? `${tc.id}-${tc.version}-${tc.is_deleted}` : "new"} tc={tc} projectId={projectId} project={pq.data} />;

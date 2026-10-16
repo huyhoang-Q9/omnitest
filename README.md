@@ -5,6 +5,9 @@
 Chạy thử toàn bộ hệ thống ngay trên GitHub: bấm nút trên, chờ script khởi động xong rồi mở cổng 8080
 ([hướng dẫn](docs/codespaces.md)).
 
+Hướng dẫn sử dụng từng bước có ảnh màn hình: [docs/huong-dan-su-dung.md](docs/huong-dan-su-dung.md) (trong ứng dụng: menu
+**Hướng dẫn sử dụng**).
+
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 

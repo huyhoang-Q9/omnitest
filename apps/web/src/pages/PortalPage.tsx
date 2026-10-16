@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BarChart3, FileCode2, Globe, Layers, PlayCircle, Radio, Zap } from "lucide-react";
+import { ArrowRight, BarChart3, BookOpen, FileCode2, Globe, Layers, PlayCircle, Radio, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ErrorState, LoadingState } from "@/components/states";
@@ -115,6 +115,11 @@ export function PortalPage() {
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white/10">
                 <Link to="/test-runs">Xem kết quả</Link>
+              </Button>
+              <Button asChild size="lg" variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                <Link to="/help">
+                  <BookOpen /> Hướng dẫn sử dụng
+                </Link>
               </Button>
             </div>
           </div>

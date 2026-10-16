@@ -56,3 +56,34 @@ test("kiểm thử hệ thống 3 bước: kiểm tra nhanh chạy thật qua wo
   expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(100);
   await page.screenshot({ path: `${shots}/${info.project.name}-portal-result.png`, fullPage: true });
 });
+
+test("hướng dẫn sử dụng: ảnh màn hình thật, mở đúng màn hình, đánh dấu đã làm", async ({ page }, info) => {
+  await login(page);
+  await page.getByRole("link", { name: "Hướng dẫn sử dụng" }).first().click();
+  await expect(page.getByRole("heading", { name: "Hướng dẫn sử dụng OmniTest" })).toBeVisible();
+  const img = page.getByRole("img", { name: "Màn hình: Kiểm thử một hệ thống trong 3 bước" });
+  await img.scrollIntoViewIfNeeded();
+  await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(100);
+  await expectNoHorizontalOverflow(page);
+  await page.screenshot({ path: `${shots}/${info.project.name}-guide.png` });
+
+  const section = page.locator("#kiem-thu");
+  await section.getByRole("button", { name: "Đánh dấu đã làm" }).click();
+  await expect(section.getByRole("button", { name: "Đã làm" })).toBeVisible();
+  await page.reload();
+  await expect(page.locator("#kiem-thu").getByRole("button", { name: "Đã làm" })).toBeVisible();
+  await page.locator("#kiem-thu").getByRole("button", { name: "Đã làm" }).click();
+
+  await page.locator("#kiem-thu").getByRole("link", { name: "Mở màn hình này" }).click();
+  await expect(page).toHaveURL(/\/test$/);
+  await expect(page.getByRole("heading", { name: "Kiểm thử hệ thống" })).toBeVisible();
+});
+
+test("soạn test case từ trang chủ: chọn dự án trước", async ({ page }) => {
+  await login(page);
+  await page.getByRole("link", { name: /Soạn test case/ }).click();
+  await expect(page.getByRole("heading", { name: "Tạo test case" })).toBeVisible();
+  await page.getByRole("button", { name: /^DEMO/ }).click();
+  await expect(page).toHaveURL(/\/test-cases\/new\?project=/);
+  await expect(page.getByLabel("Tiêu đề")).toBeVisible();
+});
