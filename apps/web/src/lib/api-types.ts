@@ -434,6 +434,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/projects/{project_id}/test-cases/import-openapi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import Openapi
+         * @description Sinh test case API trạng thái Nháp từ OpenAPI 3.x. Mặc định chỉ xem trước (dry_run).
+         */
+        post: operations["import_openapi_api_projects__project_id__test_cases_import_openapi_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/projects/{project_id}/suites": {
         parameters: {
             query?: never;
@@ -603,6 +623,57 @@ export interface paths {
         };
         /** Download Artifact */
         get: operations["download_artifact_api_artifacts__artifact_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/runs/{run_id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Run Report */
+        get: operations["run_report_api_runs__run_id__report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/reports/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Project Summary */
+        get: operations["project_summary_api_projects__project_id__reports_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{project_id}/reports/summary/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Project Summary Export */
+        get: operations["project_summary_export_api_projects__project_id__reports_summary_export_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -910,6 +981,11 @@ export interface components {
              */
             type: "none";
         };
+        /** Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post */
+        Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post: {
+            /** File */
+            file: string;
+        };
         /** Body_import_test_cases_api_projects__project_id__test_cases_import_post */
         Body_import_test_cases_api_projects__project_id__test_cases_import_post: {
             /** File */
@@ -928,6 +1004,15 @@ export interface components {
             failed: number;
             /** Other */
             other: number;
+        };
+        /** DailyStat */
+        DailyStat: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            items: components["schemas"]["StatusCounts"];
         };
         /** DashboardOut */
         DashboardOut: {
@@ -1057,6 +1142,18 @@ export interface components {
             /** Expression */
             expression: string;
         };
+        /** GroupStat */
+        GroupStat: {
+            /** Key */
+            key: string | null;
+            /** Label */
+            label: string;
+            /** Runs */
+            runs: number;
+            items: components["schemas"]["StatusCounts"];
+            /** Pass Rate */
+            pass_rate: number | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -1116,6 +1213,44 @@ export interface components {
         /** MemberUpdate */
         MemberUpdate: {
             role: components["schemas"]["ProjectRole"];
+        };
+        /** OpenApiImportResult */
+        OpenApiImportResult: {
+            /** Dry Run */
+            dry_run: boolean;
+            /** Api Title */
+            api_title: string;
+            /** Api Version */
+            api_version: string;
+            /** Operations */
+            operations: number;
+            /** Created */
+            created: number;
+            /** Skipped Duplicates */
+            skipped_duplicates: number;
+            /** Items */
+            items: components["schemas"]["OpenApiPreviewItem"][];
+            /** Warnings */
+            warnings: string[];
+            /** Created Codes */
+            created_codes?: string[];
+        };
+        /** OpenApiPreviewItem */
+        OpenApiPreviewItem: {
+            /** Method */
+            method: string;
+            /** Path */
+            path: string;
+            /** Title */
+            title: string;
+            /** Side Effect */
+            side_effect: boolean;
+            /** Variables */
+            variables: string[];
+            /** Warnings */
+            warnings: string[];
+            /** Duplicate */
+            duplicate: boolean;
         };
         /** Page[AuditOut] */
         Page_AuditOut_: {
@@ -1218,6 +1353,41 @@ export interface components {
              */
             member_count: number;
         };
+        /** ProjectReportOut */
+        ProjectReportOut: {
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Project Key */
+            project_key: string;
+            /** Project Name */
+            project_name: string;
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            filters: components["schemas"]["ReportFilters"];
+            /** Runs */
+            runs: number;
+            /** Run Statuses */
+            run_statuses: {
+                [key: string]: number;
+            };
+            items: components["schemas"]["StatusCounts"];
+            /** Pass Rate */
+            pass_rate: number | null;
+            /** By Environment */
+            by_environment: components["schemas"]["GroupStat"][];
+            /** By Suite */
+            by_suite: components["schemas"]["GroupStat"][];
+            /** Test Cases */
+            test_cases: components["schemas"]["TestCaseStat"][];
+            /** Daily */
+            daily: components["schemas"]["DailyStat"][];
+        };
         /**
          * ProjectRole
          * @enum {string}
@@ -1229,6 +1399,29 @@ export interface components {
             name?: string | null;
             /** Description */
             description?: string | null;
+        };
+        /** ReportFilters */
+        ReportFilters: {
+            /**
+             * Date From
+             * Format: date
+             */
+            date_from: string;
+            /**
+             * Date To
+             * Format: date
+             */
+            date_to: string;
+            /** Timezone */
+            timezone: string;
+            /** Environment Id */
+            environment_id: string | null;
+            /** Environment Name */
+            environment_name: string | null;
+            /** Suite Id */
+            suite_id: string | null;
+            /** Suite Name */
+            suite_name: string | null;
         };
         /** RunCreate */
         RunCreate: {
@@ -1449,6 +1642,39 @@ export interface components {
          * @enum {string}
          */
         RunStatus: "queued" | "running" | "passed" | "failed" | "skipped" | "blocked" | "cancelled" | "error";
+        /** StatusCounts */
+        StatusCounts: {
+            /**
+             * Passed
+             * @default 0
+             */
+            passed: number;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Error
+             * @default 0
+             */
+            error: number;
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Skipped
+             * @default 0
+             */
+            skipped: number;
+            /**
+             * Cancelled
+             * @default 0
+             */
+            cancelled: number;
+        };
         /** StepResultOut */
         StepResultOut: {
             /**
@@ -1678,6 +1904,30 @@ export interface components {
              * @default 0
              */
             step_count: number;
+        };
+        /** TestCaseStat */
+        TestCaseStat: {
+            /** Test Case Id */
+            test_case_id: string | null;
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            /** Executions */
+            executions: number;
+            items: components["schemas"]["StatusCounts"];
+            /** Pass Rate */
+            pass_rate: number | null;
+            last_status: components["schemas"]["RunStatus"];
+            /** Last Error */
+            last_error: string | null;
+            /**
+             * Last Run Id
+             * Format: uuid
+             */
+            last_run_id: string;
+            /** Last Finished At */
+            last_finished_at: string | null;
         };
         /**
          * TestCaseStatus
@@ -3087,6 +3337,44 @@ export interface operations {
             };
         };
     };
+    import_openapi_api_projects__project_id__test_cases_import_openapi_post: {
+        parameters: {
+            query?: {
+                dry_run?: boolean;
+                tag?: string | null;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenApiImportResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_suites_api_projects__project_id__suites_get: {
         parameters: {
             query?: never;
@@ -3506,6 +3794,116 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_report_api_runs__run_id__report_get: {
+        parameters: {
+            query?: {
+                format?: "html" | "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html; charset=utf-8": unknown;
+                    "text/csv; charset=utf-8": unknown;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    project_summary_api_projects__project_id__reports_summary_get: {
+        parameters: {
+            query?: {
+                date_from?: string | null;
+                date_to?: string | null;
+                environment_id?: string | null;
+                suite_id?: string | null;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectReportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    project_summary_export_api_projects__project_id__reports_summary_export_get: {
+        parameters: {
+            query?: {
+                format?: "html" | "csv" | "xlsx";
+                date_from?: string | null;
+                date_to?: string | null;
+                environment_id?: string | null;
+                suite_id?: string | null;
+            };
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html; charset=utf-8": unknown;
+                    "text/csv; charset=utf-8": unknown;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": unknown;
                 };
             };
             /** @description Validation Error */

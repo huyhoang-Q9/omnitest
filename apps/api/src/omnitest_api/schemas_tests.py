@@ -137,6 +137,28 @@ class ImportResult(BaseModel):
     errors: list[ImportRowError]
 
 
+class OpenApiPreviewItem(BaseModel):
+    method: str
+    path: str
+    title: str
+    side_effect: bool
+    variables: list[str]
+    warnings: list[str]
+    duplicate: bool
+
+
+class OpenApiImportResult(BaseModel):
+    dry_run: bool
+    api_title: str
+    api_version: str
+    operations: int
+    created: int
+    skipped_duplicates: int
+    items: list[OpenApiPreviewItem]
+    warnings: list[str]
+    created_codes: list[str] = Field(default_factory=list)
+
+
 # ---------- Suites ----------
 
 

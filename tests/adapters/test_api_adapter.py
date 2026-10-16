@@ -150,13 +150,40 @@ async def test_disallowed_targets_blocked(demo_url: str, url: str) -> None:
     assert r.status == Outcome.BLOCKED, (url, r.error)
 
 
-async def test_redirect_to_internal_metadata_blocked(demo_url: str) -> None:
-    # /  của demo chuyển hướng tới /login (cùng host, hợp lệ) nên đạt; còn chuyển hướng ra ngoài allowlist bị chặn.
+async def test_redirect_same_host_allowed(demo_url: str) -> None:
+    # / của demo chuyển hướng tới /login (cùng host, hợp lệ).
     ok = await ApiHttpxAdapter().execute(
         ctx(demo_url),
         defn([{"name": "r", "url": "/", "assertions": [{"type": "status", "equals": 200}]}]),
     )
     assert ok.status == Outcome.PASSED
+
+
+@pytest.mark.parametrize(
+    "target",
+    [
+        "http://169.254.169.254/latest/meta-data/",
+        "http://metadata.google.internal/",
+        "http://[::ffff:169.254.169.254]/",
+        "http://example.org/",
+    ],
+)
+async def test_redirect_to_forbidden_target_blocked(demo_url: str, target: str) -> None:
+    r = await ApiHttpxAdapter().execute(
+        ctx(demo_url),
+        defn([{"name": "r", "url": "/api/redirect", "query": {"to": target}}]),
+    )
+    assert r.status == Outcome.BLOCKED, r.steps[0].error
+
+
+async def test_hostname_resolving_to_private_blocked(demo_url: str) -> None:
+    # Tên miền hợp lệ trong allowlist nhưng phân giải ra IP nội bộ (kiểu DNS rebinding) vẫn bị chặn.
+    port = demo_url.rsplit(":", 1)[1]
+    r = await ApiHttpxAdapter().execute(
+        ctx(f"http://localhost:{port}", private=False, hosts=("127.0.0.1",)),
+        defn([{"name": "r", "url": "/api/health"}]),
+    )
+    assert r.status == Outcome.BLOCKED
 
 
 async def test_cancel_before_start(demo_url: str) -> None:

@@ -32,12 +32,14 @@ from omnitest_api.schemas_tests import (
     DEFINITION_ADAPTER,
     ImportResult,
     ImportRowError,
+    OpenApiImportResult,
+    OpenApiPreviewItem,
     TestCaseCreate,
     TestCaseOut,
     TestCaseUpdate,
     TestCaseVersionOut,
 )
-from omnitest_api.services import test_case_io
+from omnitest_api.services import openapi_import, test_case_io
 from omnitest_api.services.test_cases import (
     dump_definition,
     effective_side_effect,
@@ -472,6 +474,95 @@ async def import_test_cases(
         request=request,
         project_id=project_id,
         details={"file": (file.filename or "")[:100], "created": created, "updated": updated},
+    )
+    await db.commit()
+    return result
+
+
+@router.post(
+    "/api/projects/{project_id}/test-cases/import-openapi", response_model=OpenApiImportResult
+)
+async def import_openapi(
+    project_id: uuid.UUID,
+    user: CurrentUser,
+    db: DB,
+    request: Request,
+    file: Annotated[UploadFile, File()],
+    dry_run: bool = Query(default=True),
+    tag: Annotated[str | None, Query(max_length=50)] = None,
+) -> OpenApiImportResult:
+    """Sinh test case API trạng thái Nháp từ OpenAPI 3.x. Mặc định chỉ xem trước (dry_run)."""
+    access = await get_project_access(db, user, project_id)
+    require_role(access, ProjectRole.MANAGER)
+    require_writable(access)
+    limit = get_settings().max_upload_bytes
+    data = await file.read(limit + 1)
+    if len(data) > limit:
+        raise HTTPException(413, f"File vượt quá {limit // 1024} KB")
+    try:
+        plan = openapi_import.build_plan(
+            openapi_import.parse_document(data), tag.strip().lower() if tag else None
+        )
+    except openapi_import.OpenApiError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+    # Bỏ qua operation đã được import trước đó (test case chưa xóa có cùng đánh dấu).
+    existing = {
+        str(tc.test_data.get(openapi_import.MARKER_KEY))
+        for tc in await db.scalars(
+            select(TestCase).where(
+                TestCase.project_id == project_id,
+                TestCase.is_deleted.is_(False),
+                TestCase.test_type == TestType.API,
+            )
+        )
+        if isinstance(tc.test_data, dict) and tc.test_data.get(openapi_import.MARKER_KEY)
+    }
+    items = []
+    todo = []
+    for case in plan.cases:
+        marker = f"{case.method} {case.path}"
+        dup = marker in existing
+        items.append(
+            OpenApiPreviewItem(
+                method=case.method,
+                path=case.path,
+                title=case.body.title,
+                side_effect=effective_side_effect(case.body.definition, False),
+                variables=case.variables,
+                warnings=case.warnings,
+                duplicate=dup,
+            )
+        )
+        if not dup:
+            todo.append(case)
+    result = OpenApiImportResult(
+        dry_run=dry_run,
+        api_title=plan.title,
+        api_version=plan.version,
+        operations=len(plan.cases),
+        created=len(todo),
+        skipped_duplicates=len(plan.cases) - len(todo),
+        items=items,
+        warnings=plan.warnings,
+    )
+    if dry_run:
+        return result
+    for case in todo:
+        tc = await _insert_case(db, access, user, case.body)
+        result.created_codes.append(tc.code)
+    audit.record(
+        db,
+        action="test_case.import_openapi",
+        actor=user,
+        request=request,
+        project_id=project_id,
+        details={
+            "file": (file.filename or "")[:100],
+            "api": plan.title,
+            "created": len(todo),
+            "skipped": result.skipped_duplicates,
+        },
     )
     await db.commit()
     return result

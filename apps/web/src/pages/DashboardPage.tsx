@@ -43,7 +43,7 @@ function RunHistoryChart({ data }: { data: Dashboard["daily"] }) {
           <Tooltip />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar dataKey="passed" name="Đạt" stackId="a" fill="var(--color-status-passed)" />
-          <Bar dataKey="failed" name="Lỗi" stackId="a" fill="var(--color-status-failed)" />
+          <Bar dataKey="failed" name="Không đạt, lỗi" stackId="a" fill="var(--color-status-failed)" />
           <Bar dataKey="other" name="Bị chặn, bỏ qua, hủy" stackId="a" fill="var(--color-status-blocked)" />
         </BarChart>
       </ResponsiveContainer>

@@ -40,7 +40,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { to: "/test-suites", key: "testSuites", icon: Layers },
       { to: "/test-runs", key: "testRuns", icon: PlayCircle },
       { to: "/live", key: "liveExecution", icon: Radio },
-      { to: "/reports", key: "reports", icon: FileBarChart, phase: "GĐ4" },
+      { to: "/reports", key: "reports", icon: FileBarChart },
       { to: "/ai", key: "aiAssistant", icon: Bot, phase: "GĐ5" },
     ],
   },

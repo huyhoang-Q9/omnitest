@@ -1,5 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Download, ListChecks, Play, Plus, Search, Upload } from "lucide-react";
+import { Download, FileCode, ListChecks, Play, Plus, Search, Upload } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { Input, NativeSelect } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
+import { OpenApiImportDialog } from "@/features/openapi-import";
 import { RunDialog } from "@/features/run-dialog";
 import { useProjectSelection } from "@/hooks/projects";
 import { useDebounced } from "@/hooks/use-debounced";
@@ -117,6 +118,7 @@ export function TestCasesPage() {
   const q = useDebounced(search.trim());
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [importOpen, setImportOpen] = useState(false);
+  const [openApiOpen, setOpenApiOpen] = useState(false);
   const [runOpen, setRunOpen] = useState(false);
   const page = Number(params.get("page") ?? 1);
   const filters = {
@@ -182,6 +184,9 @@ export function TestCasesPage() {
                 <>
                   <Button variant="outline" onClick={() => setImportOpen(true)}>
                     <Upload /> Nhập
+                  </Button>
+                  <Button variant="outline" onClick={() => setOpenApiOpen(true)}>
+                    <FileCode /> Từ OpenAPI
                   </Button>
                   <Button asChild>
                     <Link to={`/test-cases/new?project=${selected.id}`}>
@@ -341,6 +346,7 @@ export function TestCasesPage() {
         </Card>
       )}
       {selected && <ImportDialog projectId={selected.id} open={importOpen} onOpenChange={setImportOpen} />}
+      {selected && <OpenApiImportDialog projectId={selected.id} open={openApiOpen} onOpenChange={setOpenApiOpen} />}
       {selected && (
         <RunDialog
           open={runOpen}

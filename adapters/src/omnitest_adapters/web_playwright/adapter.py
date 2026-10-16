@@ -1,7 +1,8 @@
 """Adapter kiểm thử Web bằng Playwright (Python, async).
 
 Không dùng sleep cố định: mọi hành động dùng cơ chế auto-wait của Playwright, kiểm tra dùng expect() có timeout.
-Mọi request của trình duyệt đi qua bộ lọc đích được phép của môi trường.
+Mọi request của trình duyệt đi qua bộ lọc đích được phép của môi trường (route) và proxy kiểm soát mạng
+(EgressProxy) để chặn cả các bước chuyển hướng mà route của Playwright không thấy.
 """
 
 import os
@@ -27,6 +28,7 @@ from omnitest_adapters.core.definitions import WebStep, WebTestDefinition
 from omnitest_adapters.core.network import BlockedTargetError, check_url, check_url_static
 from omnitest_adapters.core.results import AdapterResult, ArtifactFile, Outcome, StepOutcome
 from omnitest_adapters.core.templating import MissingVariableError
+from omnitest_adapters.web_playwright.egress_proxy import BLOCKED_HEADER, EgressProxy
 from omnitest_adapters.web_playwright.trace_redaction import redact_trace
 
 ALLOWED_INTERNAL_SCHEMES = {"data", "blob", "about"}
@@ -96,9 +98,22 @@ class WebPlaywrightAdapter:
                 return
             await route.continue_()
 
-        async with async_playwright() as pw:
+        async with EgressProxy(ctx.policy) as proxy, async_playwright() as pw:
             browser_type = getattr(pw, definition.browser)
-            launch: dict[str, Any] = {"headless": True}
+            launch: dict[str, Any] = {
+                "headless": True,
+                "proxy": {"server": proxy.url, "bypass": "<-loopback>"},
+            }
+            if definition.browser == "chromium":
+                launch["args"] = [
+                    # Mặc định Chromium không đi qua proxy cho loopback; buộc đi qua để kiểm tra cả 127.0.0.1.
+                    "--proxy-bypass-list=<-loopback>",
+                    # Tắt lưu lượng nền không liên quan tới trang được test.
+                    "--disable-background-networking",
+                    "--disable-component-update",
+                    "--disable-sync",
+                    "--no-pings",
+                ]
             if definition.browser == "chromium" and chromium_executable():
                 launch["executable_path"] = chromium_executable()
             try:
@@ -121,6 +136,17 @@ class WebPlaywrightAdapter:
                     service_workers="block",
                 )
                 await context.route("**/*", guard)
+                egress_blocked: list[str] = []
+
+                def on_response(response: Any) -> None:
+                    # Proxy trả 403 có header đánh dấu: trang đã đi tới đích bị cấm (thường qua chuyển hướng).
+                    if response.headers.get(BLOCKED_HEADER):
+                        reasons = [b for b in proxy.blocked if b.startswith(response.url)]
+                        egress_blocked.append(
+                            reasons[-1] if reasons else f"{response.url}: đích bị chặn"
+                        )
+
+                context.on("response", on_response)
                 if definition.trace != "off":
                     await context.tracing.start(screenshots=True, snapshots=True)
                 page = await context.new_page()
@@ -133,7 +159,9 @@ class WebPlaywrightAdapter:
                     except CancelledByUserError:
                         status, error, error_type = Outcome.CANCELLED, "Đã hủy", "cancelled"
                         break
-                    outcome = await self._run_step(page, ctx, index, step, blocked)
+                    outcome = await self._run_step(
+                        page, ctx, index, step, blocked, egress_blocked, proxy.blocked
+                    )
                     steps.append(outcome)
                     if ctx.on_step:
                         await ctx.on_step(outcome)
@@ -190,7 +218,14 @@ class WebPlaywrightAdapter:
         return AdapterResult(status, steps, v.mask(error) if error else None, error_type, artifacts)
 
     async def _run_step(
-        self, page: Page, ctx: ExecutionContext, index: int, step: WebStep, blocked: list[str]
+        self,
+        page: Page,
+        ctx: ExecutionContext,
+        index: int,
+        step: WebStep,
+        blocked: list[str],
+        egress_blocked: list[str],
+        proxy_blocked: list[str],
     ) -> StepOutcome:
         v = ctx.variables
         started = time.monotonic()
@@ -199,6 +234,11 @@ class WebPlaywrightAdapter:
         artifacts: list[ArtifactFile] = []
         timeout = min(step.timeout_ms, max(ctx.remaining_ms(), 1))
         blocked_before = len(blocked)
+        egress_before = len(egress_blocked)
+        proxy_before = len(proxy_blocked)
+
+        def newly_blocked() -> list[str]:
+            return blocked[blocked_before:] + egress_blocked[egress_before:]
 
         def done(
             status: Outcome, error: str | None = None, error_type: str | None = None
@@ -283,10 +323,10 @@ class WebPlaywrightAdapter:
             return done(Outcome.BLOCKED, str(exc), "blocked_target")
         except PlaywrightTimeout:
             msg = f"Hết {timeout} ms mà điều kiện chưa thỏa"
-            if len(blocked) > blocked_before:
+            if newly_blocked():
                 return done(
                     Outcome.BLOCKED,
-                    "Request bị chặn: " + "; ".join(blocked[blocked_before:])[:500],
+                    "Request bị chặn: " + "; ".join(newly_blocked())[:500],
                     "blocked_target",
                 )
             return done(Outcome.FAILED, msg, "timeout")
@@ -294,12 +334,26 @@ class WebPlaywrightAdapter:
             msg = str(exc).splitlines()[0] if str(exc) else "Kiểm tra không đạt"
             return done(Outcome.FAILED, msg[:1000], "assertion")
         except PlaywrightError as exc:
-            if len(blocked) > blocked_before:
+            if "ERR_TUNNEL_CONNECTION_FAILED" in exc.message and len(proxy_blocked) > proxy_before:
+                # Kết nối HTTPS (CONNECT) bị proxy từ chối: trình duyệt không thấy phản hồi 403.
                 return done(
                     Outcome.BLOCKED,
-                    "Request bị chặn: " + "; ".join(blocked[blocked_before:])[:500],
+                    "Kết nối bị chặn: " + "; ".join(proxy_blocked[proxy_before:])[:500],
+                    "blocked_target",
+                )
+            if newly_blocked():
+                return done(
+                    Outcome.BLOCKED,
+                    "Request bị chặn: " + "; ".join(newly_blocked())[:500],
                     "blocked_target",
                 )
             return done(Outcome.FAILED, exc.message.splitlines()[0][:1000], "browser_error")
         details["url"] = v.mask(page.url)
+        if len(egress_blocked) > egress_before:
+            # Proxy đã chặn một kết nối (thường là chuyển hướng tới đích cấm): không coi bước là đạt.
+            return done(
+                Outcome.BLOCKED,
+                "Kết nối bị chặn: " + "; ".join(egress_blocked[egress_before:])[:500],
+                "blocked_target",
+            )
         return done(Outcome.PASSED)

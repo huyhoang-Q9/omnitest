@@ -83,6 +83,6 @@ test("luồng chính: dự án, môi trường, biến secret, lưu trữ", asyn
 
 test("chức năng chưa có hiển thị rõ là chưa hỗ trợ", async ({ page }) => {
   await login(page);
-  await page.goto("/reports");
-  await expect(page.getByText("Chức năng này có từ Giai đoạn 4")).toBeVisible();
+  await page.goto("/ai");
+  await expect(page.getByText("Chức năng này có từ Giai đoạn 5")).toBeVisible();
 });

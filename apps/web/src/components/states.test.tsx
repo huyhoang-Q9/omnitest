@@ -24,6 +24,6 @@ describe("states", () => {
     const labels = Object.values(STATUS_META).map((m) => m.label);
     expect(new Set(labels).size).toBe(labels.length);
     render(<StatusBadge status="failed" />);
-    expect(screen.getByText("Lỗi")).toBeInTheDocument();
+    expect(screen.getByText("Không đạt")).toBeInTheDocument();
   });
 });

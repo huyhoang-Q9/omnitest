@@ -14,6 +14,7 @@ from omnitest_api.routers import (
     dashboard,
     environments,
     projects,
+    reports,
     runs,
     suites,
     test_cases,
@@ -76,6 +77,7 @@ def create_app() -> FastAPI:
         test_cases.router,
         suites.router,
         runs.router,
+        reports.router,
     ):
         app.include_router(r)
 

@@ -204,6 +204,12 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/api/redirect")
+def open_redirect(to: str) -> RedirectResponse:
+    """Chuyển hướng tới URL bất kỳ: chỉ để kiểm tra OmniTest chặn chuyển hướng tới đích bị cấm."""
+    return RedirectResponse(to, status_code=302)
+
+
 @app.get("/api/slow")
 async def slow(seconds: float = 1.0) -> dict[str, float]:
     """Phản hồi chậm (tối đa 10 giây) để thử timeout và hủy lần chạy."""

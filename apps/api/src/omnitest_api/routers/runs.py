@@ -195,7 +195,12 @@ async def create_run(
         project_id=project_id,
         target_type="run",
         target_id=run.id,
-        details={"environment": env.name, "count": len(cases), "confirmed": bool(reasons)},
+        details={
+            "environment": env.name,
+            "environment_kind": env.kind.value,
+            "count": len(cases),
+            "confirmed": bool(reasons),
+        },
     )
     await db.commit()
     await db.refresh(run)

@@ -1824,6 +1824,87 @@
         }
       }
     },
+    "/api/projects/{project_id}/test-cases/import-openapi": {
+      "post": {
+        "tags": [
+          "test-cases"
+        ],
+        "summary": "Import Openapi",
+        "description": "Sinh test case API trạng thái Nháp từ OpenAPI 3.x. Mặc định chỉ xem trước (dry_run).",
+        "operationId": "import_openapi_api_projects__project_id__test_cases_import_openapi_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "dry_run",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Dry Run"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiImportResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{project_id}/suites": {
       "get": {
         "tags": [
@@ -2476,6 +2557,297 @@
               "application/json": {
                 "schema": {}
               }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/{run_id}/report": {
+      "get": {
+        "tags": [
+          "reports"
+        ],
+        "summary": "Run Report",
+        "operationId": "run_report_api_runs__run_id__report_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "html",
+                "csv",
+                "xlsx"
+              ],
+              "type": "string",
+              "default": "html",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html; charset=utf-8": {},
+              "text/csv; charset=utf-8": {},
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{project_id}/reports/summary": {
+      "get": {
+        "tags": [
+          "reports"
+        ],
+        "summary": "Project Summary",
+        "operationId": "project_summary_api_projects__project_id__reports_summary_get",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "name": "environment_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Environment Id"
+            }
+          },
+          {
+            "name": "suite_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Suite Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectReportOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{project_id}/reports/summary/export": {
+      "get": {
+        "tags": [
+          "reports"
+        ],
+        "summary": "Project Summary Export",
+        "operationId": "project_summary_export_api_projects__project_id__reports_summary_export_get",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "html",
+                "csv",
+                "xlsx"
+              ],
+              "type": "string",
+              "default": "xlsx",
+              "title": "Format"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "name": "environment_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Environment Id"
+            }
+          },
+          {
+            "name": "suite_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Suite Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html; charset=utf-8": {},
+              "text/csv; charset=utf-8": {},
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
             }
           },
           "422": {
@@ -3207,6 +3579,20 @@
         "type": "object",
         "title": "AuthNone"
       },
+      "Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_import_openapi_api_projects__project_id__test_cases_import_openapi_post"
+      },
       "Body_import_test_cases_api_projects__project_id__test_cases_import_post": {
         "properties": {
           "file": {
@@ -3249,6 +3635,24 @@
           "other"
         ],
         "title": "DailyRunStat"
+      },
+      "DailyStat": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "items": {
+            "$ref": "#/components/schemas/StatusCounts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "items"
+        ],
+        "title": "DailyStat"
       },
       "DashboardOut": {
         "properties": {
@@ -3602,6 +4006,52 @@
         ],
         "title": "Extract"
       },
+      "GroupStat": {
+        "properties": {
+          "key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "runs": {
+            "type": "integer",
+            "title": "Runs"
+          },
+          "items": {
+            "$ref": "#/components/schemas/StatusCounts"
+          },
+          "pass_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "runs",
+          "items",
+          "pass_rate"
+        ],
+        "title": "GroupStat"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -3753,6 +4203,116 @@
           "role"
         ],
         "title": "MemberUpdate"
+      },
+      "OpenApiImportResult": {
+        "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run"
+          },
+          "api_title": {
+            "type": "string",
+            "title": "Api Title"
+          },
+          "api_version": {
+            "type": "string",
+            "title": "Api Version"
+          },
+          "operations": {
+            "type": "integer",
+            "title": "Operations"
+          },
+          "created": {
+            "type": "integer",
+            "title": "Created"
+          },
+          "skipped_duplicates": {
+            "type": "integer",
+            "title": "Skipped Duplicates"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OpenApiPreviewItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "created_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Created Codes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dry_run",
+          "api_title",
+          "api_version",
+          "operations",
+          "created",
+          "skipped_duplicates",
+          "items",
+          "warnings"
+        ],
+        "title": "OpenApiImportResult"
+      },
+      "OpenApiPreviewItem": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "side_effect": {
+            "type": "boolean",
+            "title": "Side Effect"
+          },
+          "variables": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Variables"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "duplicate": {
+            "type": "boolean",
+            "title": "Duplicate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "path",
+          "title",
+          "side_effect",
+          "variables",
+          "warnings",
+          "duplicate"
+        ],
+        "title": "OpenApiPreviewItem"
       },
       "Page_AuditOut_": {
         "properties": {
@@ -3981,6 +4541,101 @@
         ],
         "title": "ProjectOut"
       },
+      "ProjectReportOut": {
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Id"
+          },
+          "project_key": {
+            "type": "string",
+            "title": "Project Key"
+          },
+          "project_name": {
+            "type": "string",
+            "title": "Project Name"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/ReportFilters"
+          },
+          "runs": {
+            "type": "integer",
+            "title": "Runs"
+          },
+          "run_statuses": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Run Statuses"
+          },
+          "items": {
+            "$ref": "#/components/schemas/StatusCounts"
+          },
+          "pass_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Rate"
+          },
+          "by_environment": {
+            "items": {
+              "$ref": "#/components/schemas/GroupStat"
+            },
+            "type": "array",
+            "title": "By Environment"
+          },
+          "by_suite": {
+            "items": {
+              "$ref": "#/components/schemas/GroupStat"
+            },
+            "type": "array",
+            "title": "By Suite"
+          },
+          "test_cases": {
+            "items": {
+              "$ref": "#/components/schemas/TestCaseStat"
+            },
+            "type": "array",
+            "title": "Test Cases"
+          },
+          "daily": {
+            "items": {
+              "$ref": "#/components/schemas/DailyStat"
+            },
+            "type": "array",
+            "title": "Daily"
+          }
+        },
+        "type": "object",
+        "required": [
+          "project_id",
+          "project_key",
+          "project_name",
+          "generated_at",
+          "filters",
+          "runs",
+          "run_statuses",
+          "items",
+          "pass_rate",
+          "by_environment",
+          "by_suite",
+          "test_cases",
+          "daily"
+        ],
+        "title": "ProjectReportOut"
+      },
       "ProjectRole": {
         "type": "string",
         "enum": [
@@ -4021,6 +4676,81 @@
         },
         "type": "object",
         "title": "ProjectUpdate"
+      },
+      "ReportFilters": {
+        "properties": {
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "title": "Date From"
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "title": "Date To"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
+          },
+          "environment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment Id"
+          },
+          "environment_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment Name"
+          },
+          "suite_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suite Id"
+          },
+          "suite_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suite Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date_from",
+          "date_to",
+          "timezone",
+          "environment_id",
+          "environment_name",
+          "suite_id",
+          "suite_name"
+        ],
+        "title": "ReportFilters"
       },
       "RunCreate": {
         "properties": {
@@ -4732,6 +5462,42 @@
         ],
         "title": "RunStatus"
       },
+      "StatusCounts": {
+        "properties": {
+          "passed": {
+            "type": "integer",
+            "title": "Passed",
+            "default": 0
+          },
+          "failed": {
+            "type": "integer",
+            "title": "Failed",
+            "default": 0
+          },
+          "error": {
+            "type": "integer",
+            "title": "Error",
+            "default": 0
+          },
+          "blocked": {
+            "type": "integer",
+            "title": "Blocked",
+            "default": 0
+          },
+          "skipped": {
+            "type": "integer",
+            "title": "Skipped",
+            "default": 0
+          },
+          "cancelled": {
+            "type": "integer",
+            "title": "Cancelled",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "StatusCounts"
+      },
       "StepResultOut": {
         "properties": {
           "id": {
@@ -5216,6 +5982,93 @@
           "updated_at"
         ],
         "title": "TestCaseOut"
+      },
+      "TestCaseStat": {
+        "properties": {
+          "test_case_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Case Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "executions": {
+            "type": "integer",
+            "title": "Executions"
+          },
+          "items": {
+            "$ref": "#/components/schemas/StatusCounts"
+          },
+          "pass_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Rate"
+          },
+          "last_status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_run_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Last Run Id"
+          },
+          "last_finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Finished At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "test_case_id",
+          "code",
+          "title",
+          "executions",
+          "items",
+          "pass_rate",
+          "last_status",
+          "last_error",
+          "last_run_id",
+          "last_finished_at"
+        ],
+        "title": "TestCaseStat"
       },
       "TestCaseStatus": {
         "type": "string",

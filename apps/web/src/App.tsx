@@ -9,6 +9,7 @@ import { EnvironmentsPage } from "@/pages/EnvironmentsPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProjectDetailPage } from "@/pages/ProjectDetailPage";
 import { ProjectsPage } from "@/pages/ProjectsPage";
+import { ReportsPage } from "@/pages/ReportsPage";
 import { LivePage } from "@/pages/LivePage";
 import { RunDetailPage } from "@/pages/RunDetailPage";
 import { SettingsPage } from "@/pages/SettingsPage";
@@ -37,7 +38,6 @@ function RequireAuth() {
 }
 
 const PLANNED = [
-  { path: "/reports", title: "Báo cáo", phase: "Giai đoạn 4", description: "Báo cáo theo dự án, suite, môi trường; xuất HTML, CSV, Excel." },
   { path: "/ai", title: "Trợ lý AI", phase: "Giai đoạn 5", description: "Đề xuất test case, sinh script nháp và phân tích lỗi; luôn cần người dùng duyệt." },
 ];
 
@@ -59,6 +59,7 @@ export default function App() {
         <Route path="test-runs" element={<TestRunsPage />} />
         <Route path="test-runs/:runId" element={<RunDetailPage />} />
         <Route path="live" element={<LivePage />} />
+        <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         {PLANNED.map((p) => (
           <Route key={p.path} path={p.path.slice(1)} element={<ComingSoonPage {...p} />} />

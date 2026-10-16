@@ -42,7 +42,7 @@ class ImportFileError(Exception):
     pass
 
 
-def _safe_cell(value: Any) -> Any:
+def safe_cell(value: Any) -> Any:
     if isinstance(value, str) and value.startswith(DANGEROUS_PREFIX):
         return "'" + value
     return value
@@ -72,7 +72,7 @@ def export_csv(cases: list[TestCase]) -> bytes:
     w = csv.writer(buf)
     w.writerow(COLUMNS)
     for tc in cases:
-        w.writerow([_safe_cell(v) for v in _row(tc)])
+        w.writerow([safe_cell(v) for v in _row(tc)])
     # BOM để Excel mở đúng tiếng Việt.
     return ("﻿" + buf.getvalue()).encode("utf-8")
 
@@ -84,7 +84,7 @@ def export_xlsx(cases: list[TestCase]) -> bytes:
     ws.title = "Test cases"
     ws.append(COLUMNS)
     for tc in cases:
-        ws.append([_safe_cell(v) for v in _row(tc)])
+        ws.append([safe_cell(v) for v in _row(tc)])
     for col, width in zip(
         "ABCDEFGHIJKLMN", (16, 40, 40, 12, 10, 10, 20, 30, 30, 10, 10, 12, 30, 60), strict=True
     ):

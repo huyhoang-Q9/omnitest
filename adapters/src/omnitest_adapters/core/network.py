@@ -71,6 +71,9 @@ def classify_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> str:
     """Trả 'blocked', 'private' hoặc 'public'."""
     if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
         ip = ip.ipv4_mapped
+    if ip.is_loopback:
+        # Kiểm tra trước is_reserved: Python xếp ::1 vào dải dự trữ ::/8.
+        return "private"
     if ip.is_link_local or ip.is_multicast or ip.is_unspecified or ip.is_reserved:
         return "blocked"
     if ip.is_loopback or ip.is_private or (isinstance(ip, ipaddress.IPv4Address) and ip in CGNAT):

@@ -1,3 +1,4 @@
+import socket
 import time
 from typing import Any
 
@@ -134,3 +135,44 @@ async def test_private_network_blocked_for_browser(demo_url: str) -> None:
         ctx(demo_url, private=False), web(LOGIN_STEPS[:1], trace="off")
     )
     assert r.status == Outcome.BLOCKED
+
+
+@pytest.mark.parametrize(
+    "target",
+    ["http://169.254.169.254/latest/meta-data/", "http://example.org/"],
+)
+async def test_browser_redirect_to_forbidden_target_blocked(demo_url: str, target: str) -> None:
+    # Route của Playwright không thấy các bước chuyển hướng; proxy kiểm soát mạng phải chặn.
+    r = await WebPlaywrightAdapter().execute(
+        ctx(demo_url),
+        web(
+            [{"name": "Mở", "action": "goto", "value": f"/api/redirect?to={target}"}],
+            trace="off",
+        ),
+    )
+    assert r.status == Outcome.BLOCKED, r.steps[0].error
+
+
+async def test_browser_redirect_to_other_local_port_blocked(demo_url: str) -> None:
+    # Cùng 127.0.0.1 nhưng khác cổng (không có trong allowlist host:port) cũng bị chặn.
+    host, port = demo_url.rsplit(":", 1)
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        free_port = sock.getsockname()[1]
+    policy = NetworkPolicy((f"127.0.0.1:{port}",), True)
+    c = ctx(demo_url)
+    c.policy = policy
+    r = await WebPlaywrightAdapter().execute(
+        c,
+        web(
+            [
+                {
+                    "name": "Mở",
+                    "action": "goto",
+                    "value": f"/api/redirect?to={host}:{free_port}/x",
+                }
+            ],
+            trace="off",
+        ),
+    )
+    assert r.status == Outcome.BLOCKED, r.steps[0].error

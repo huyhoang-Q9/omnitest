@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDown, ChevronRight, Download, FileArchive, ImageIcon } from "lucide-react";
+import { ChevronDown, ChevronRight, Download, FileArchive, FileText, ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PageHeader } from "@/components/page-header";
 import { ErrorState, LoadingState } from "@/components/states";
 import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CancelRunButton, RunProgress } from "@/features/runs";
 import { api, type Artifact, type RunDetail, type RunItem, type RunItemDetail, type StepResult } from "@/lib/api";
@@ -155,7 +156,29 @@ export function RunDetailPage() {
             {formatDateTime(run.created_at)}
           </span>
         }
-        actions={<CancelRunButton run={run} size="default" />}
+        actions={
+          live ? (
+            <CancelRunButton run={run} size="default" />
+          ) : (
+            <>
+              <Button variant="outline" asChild>
+                <a href={`/api/runs/${run.id}/report?format=html`} target="_blank" rel="noopener">
+                  <FileText /> Báo cáo HTML
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href={`/api/runs/${run.id}/report?format=xlsx`}>
+                  <Download /> Excel
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href={`/api/runs/${run.id}/report?format=csv`}>
+                  <Download /> CSV
+                </a>
+              </Button>
+            </>
+          )
+        }
       />
       <div className="grid gap-6">
         <Card>

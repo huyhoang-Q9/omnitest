@@ -3,9 +3,10 @@
 Nền tảng kiểm thử tự động đa dự án: quản lý dự án, môi trường, test case, chạy test Web (Playwright) và API,
 báo cáo, có lớp AI hỗ trợ (tùy chọn). Kiến trúc mở rộng theo adapter cho Desktop và Mobile.
 
-Trạng thái hiện tại: **Giai đoạn 3** (quản lý test case, suite; chạy test API bằng HTTPX và Web bằng Playwright qua
-worker Dramatiq; theo dõi trực tiếp, kết quả từng bước, ảnh chụp, trace; dashboard số liệu thật), trên nền Giai đoạn 2
-(đăng nhập, phân quyền, dự án, môi trường, biến secret, audit). Kế hoạch tổng thể: [docs/ke-hoach-mvp.md](docs/ke-hoach-mvp.md). Báo cáo giai đoạn:
+Trạng thái hiện tại: **Giai đoạn 4** (báo cáo HTML/CSV/Excel theo lần chạy và tổng hợp dự án, sinh test API từ
+OpenAPI, bộ test bảo mật SSRF/IDOR/upload), trên nền Giai đoạn 3 (test case, suite, chạy test API bằng HTTPX và Web
+bằng Playwright qua worker Dramatiq, kết quả từng bước, ảnh chụp, trace, dashboard) và Giai đoạn 2 (đăng nhập, phân
+quyền, dự án, môi trường, biến secret, audit). Kế hoạch tổng thể: [docs/ke-hoach-mvp.md](docs/ke-hoach-mvp.md). Báo cáo giai đoạn:
 [docs/phases](docs/phases).
 
 ## Cấu trúc
@@ -88,6 +89,9 @@ Sau khi đổi API: `pnpm --filter @omnitest/web gen:api` để sinh lại `open
   "Bị chặn" cho tới khi có adapter thật.
 - Worker chỉ chạy định nghĩa test dạng khai báo qua adapter, không thực thi code người dùng nhập.
 - Chặn SSRF: chỉ gọi host của môi trường và danh sách host được phép; mạng nội bộ chỉ khi Admin dự án bật;
-  địa chỉ metadata cloud luôn bị chặn, kiểm tra cả khi chuyển hướng và lúc kết nối.
+  địa chỉ metadata cloud luôn bị chặn, kiểm tra cả khi chuyển hướng và lúc kết nối. Trình duyệt của test Web đi
+  qua proxy kiểm soát mạng nên chuyển hướng trong trình duyệt cũng bị kiểm tra.
+- Báo cáo HTML là trang tĩnh có CSP sandbox; CSV/Excel chống formula injection. Import OpenAPI chỉ đọc YAML an toàn
+  (cấm alias), chỉ giải `$ref` nội bộ.
 - Chạy trên môi trường UAT/Staging hoặc test có thay đổi dữ liệu cần người dùng xác nhận; test thay đổi dữ liệu
   không tự thử lại. Secret được che trong log, kết quả bước và trace.
