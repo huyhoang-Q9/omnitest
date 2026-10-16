@@ -21,13 +21,13 @@ adapters          Adapter API (HTTPX), Web (Playwright), Desktop/Mobile qua Appi
 ai                Lớp AI tùy chọn: provider Anthropic/OpenAI-compatible, đề xuất test case, phân tích lỗi
 apps/web          React + TypeScript + Vite + Tailwind (thành phần theo phong cách shadcn/ui)
 packages/contracts  OpenAPI sinh từ Pydantic, nguồn type TypeScript cho web
-infra/docker      Dockerfile, nginx, Docker Compose
+infra/docker      Dockerfile, nginx, Docker Compose, image sandbox script code (sandbox.Dockerfile, sandbox/)
 infra/scripts     dev.sh (chạy không cần Docker), export_openapi.py
 tests/            unit, integration, security (pytest, PostgreSQL thật), e2e (Playwright)
 docs/             kế hoạch, báo cáo từng giai đoạn
 ```
 
-Thư mục `packages/test-sdk` dành cho script code (chưa làm, cần sandbox).
+Script code pytest/Playwright chạy trong sandbox Docker cô lập (tắt mặc định): xem [docs/sandbox.md](docs/sandbox.md).
 
 ## Yêu cầu
 
@@ -101,7 +101,9 @@ Sau khi đổi API: `pnpm --filter @omnitest/web gen:api` để sinh lại `open
 - Chức năng chưa triển khai hiển thị rõ "Chưa hỗ trợ", không trả kết quả giả. Test Desktop/Mobile cần Appium
   server (Base URL của môi trường), driver và thiết bị thật; thiếu một trong các thứ đó thì kết quả là "Bị chặn".
   Capability Appium bị giới hạn theo danh sách cho phép, "app" không được là URL.
-- Worker chỉ chạy định nghĩa test dạng khai báo qua adapter, không thực thi code người dùng nhập.
+- Worker chỉ chạy định nghĩa test dạng khai báo qua adapter, không thực thi code người dùng nhập. Script code (nếu
+  máy chủ và Admin dự án cùng bật) chỉ chạy trong container sandbox: không root, rootfs chỉ đọc, không mạng mặc
+  định, giới hạn tài nguyên, chỉ Admin dự án viết được (docs/sandbox.md).
 - Chặn SSRF: chỉ gọi host của môi trường và danh sách host được phép; mạng nội bộ chỉ khi Admin dự án bật;
   địa chỉ metadata cloud luôn bị chặn, kiểm tra cả khi chuyển hướng và lúc kết nối. Trình duyệt của test Web đi
   qua proxy kiểm soát mạng nên chuyển hướng trong trình duyệt cũng bị kiểm tra.

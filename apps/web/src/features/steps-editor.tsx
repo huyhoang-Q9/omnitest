@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input, NativeSelect, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { ScriptEditor } from "@/features/script";
 import {
   APP_ACTION_LABEL,
   APP_NEEDS_LOCATOR,
@@ -593,6 +594,8 @@ export function DefinitionEditor({ value, onChange }: { value: Definition; onCha
   };
 
   const isApp = kind !== "api" && kind !== "web";
+
+  if (kind === "script") return <ScriptEditor value={value} onChange={onChange} />;
 
   const toggleJson = () => {
     if (!jsonMode) {

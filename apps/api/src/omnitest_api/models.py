@@ -102,6 +102,8 @@ class Project(TimestampMixin, Base):
     is_archived: Mapped[bool] = mapped_column(Boolean, default=False)
     # Cho phép gửi dữ liệu của dự án (yêu cầu, log lỗi đã che secret) tới nhà cung cấp AI. Admin dự án bật.
     ai_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
+    # Cho phép tạo và chạy test script code trong sandbox. Admin dự án bật; máy chủ cũng phải bật sandbox.
+    script_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
     created_by_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL")
     )
@@ -199,6 +201,7 @@ class TestType(enum.StrEnum):
     DESKTOP_WINDOWS = "desktop_windows"
     MOBILE_ANDROID = "mobile_android"
     MOBILE_IOS = "mobile_ios"
+    SCRIPT = "script"
 
 
 class Priority(enum.StrEnum):

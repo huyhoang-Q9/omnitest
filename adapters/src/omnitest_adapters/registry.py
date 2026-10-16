@@ -7,6 +7,7 @@ from omnitest_adapters import (
     desktop_macos,
     desktop_windows,
     mobile_appium,
+    sandbox,
     web_playwright,
 )
 from omnitest_adapters.core.base import AdapterRegistry
@@ -15,6 +16,13 @@ from omnitest_adapters.core.base import AdapterRegistry
 @lru_cache
 def default_registry() -> AdapterRegistry:
     reg = AdapterRegistry()
-    for mod in (api_httpx, web_playwright, desktop_macos, desktop_windows, mobile_appium):
+    for mod in (
+        api_httpx,
+        web_playwright,
+        desktop_macos,
+        desktop_windows,
+        mobile_appium,
+        sandbox,
+    ):
         reg.register(mod.adapter)
     return reg

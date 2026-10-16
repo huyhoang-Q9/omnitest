@@ -16,6 +16,10 @@ class Variables:
         self._values = dict(values)
         self._secret_keys = set(secrets)
 
+    def as_dict(self) -> dict[str, str]:
+        """Toàn bộ giá trị (gồm secret), chỉ dùng để chuyển vào sandbox script; không ghi log."""
+        return dict(self._values)
+
     def copy(self) -> "Variables":
         return Variables(self._values, self._secret_keys)
 

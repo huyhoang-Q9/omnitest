@@ -1531,6 +1531,11 @@ export interface components {
              */
             ai_enabled: boolean;
             /**
+             * Script Enabled
+             * @default false
+             */
+            script_enabled: boolean;
+            /**
              * Created At
              * Format: date-time
              */
@@ -1600,6 +1605,8 @@ export interface components {
             description?: string | null;
             /** Ai Enabled */
             ai_enabled?: boolean | null;
+            /** Script Enabled */
+            script_enabled?: boolean | null;
         };
         /** ReportFilters */
         ReportFilters: {
@@ -1843,6 +1850,41 @@ export interface components {
          * @enum {string}
          */
         RunStatus: "queued" | "running" | "passed" | "failed" | "skipped" | "blocked" | "cancelled" | "error";
+        /**
+         * ScriptTestDefinition
+         * @description Script pytest do người dùng viết, chỉ chạy trong container sandbox (không chạy trên máy chủ chính).
+         *
+         *     files: tên file (phẳng, không thư mục con) -> nội dung. Cần ít nhất một file test_*.py hoặc *_test.py.
+         *     network: "none" (mặc định) không có mạng; "environment" chỉ ra ngoài qua proxy kiểm soát theo môi trường.
+         */
+        ScriptTestDefinition: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "script";
+            /**
+             * Runner
+             * @default pytest
+             * @constant
+             */
+            runner: "pytest";
+            /** Files */
+            files: {
+                [key: string]: string;
+            };
+            /**
+             * Network
+             * @default none
+             * @enum {string}
+             */
+            network: "none" | "environment";
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
         /** StatusCounts */
         StatusCounts: {
             /**
@@ -2057,7 +2099,7 @@ export interface components {
                 [key: string]: unknown;
             };
             /** Definition */
-            definition: components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"];
+            definition: components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"] | components["schemas"]["ScriptTestDefinition"];
             /**
              * Side Effect
              * @default false
@@ -2191,7 +2233,7 @@ export interface components {
                 [key: string]: unknown;
             } | null;
             /** Definition */
-            definition?: (components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"]) | null;
+            definition?: (components["schemas"]["ApiTestDefinition"] | components["schemas"]["WebTestDefinition"] | components["schemas"]["AppTestDefinition"] | components["schemas"]["ScriptTestDefinition"]) | null;
             /** Side Effect */
             side_effect?: boolean | null;
             /** Retry Count */
@@ -2228,7 +2270,7 @@ export interface components {
          * TestType
          * @enum {string}
          */
-        TestType: "api" | "web" | "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios";
+        TestType: "api" | "web" | "desktop_macos" | "desktop_windows" | "mobile_android" | "mobile_ios" | "script";
         /** UserCreate */
         UserCreate: {
             /** Email */

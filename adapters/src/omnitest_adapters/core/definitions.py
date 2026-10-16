@@ -310,13 +310,61 @@ class AppTestDefinition(Strict):
 UnsupportedDefinition = AppTestDefinition
 
 
+# ---------- Script code (pytest) chạy trong sandbox ----------
+
+SCRIPT_FILE_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.-]{0,99}\.(py|json|csv|txt|yaml|yml)$")
+SCRIPT_MAX_FILES = 20
+SCRIPT_MAX_TOTAL_CHARS = 256 * 1024
+
+
+class ScriptTestDefinition(Strict):
+    """Script pytest do người dùng viết, chỉ chạy trong container sandbox (không chạy trên máy chủ chính).
+
+    files: tên file (phẳng, không thư mục con) -> nội dung. Cần ít nhất một file test_*.py hoặc *_test.py.
+    network: "none" (mặc định) không có mạng; "environment" chỉ ra ngoài qua proxy kiểm soát theo môi trường.
+    """
+
+    kind: Literal["script"]
+    runner: Literal["pytest"] = "pytest"
+    files: dict[str, str]
+    network: Literal["none", "environment"] = "none"
+    notes: str = Field(default="", max_length=10000)
+
+    @field_validator("files")
+    @classmethod
+    def _files(cls, v: dict[str, str]) -> dict[str, str]:
+        if not v:
+            raise ValueError("Cần ít nhất một file test")
+        if len(v) > SCRIPT_MAX_FILES:
+            raise ValueError(f"Tối đa {SCRIPT_MAX_FILES} file")
+        for name in v:
+            if not SCRIPT_FILE_RE.match(name):
+                raise ValueError(
+                    f"Tên file '{name}' không hợp lệ: chỉ chữ, số, _ . -, không thư mục con, "
+                    "đuôi .py .json .csv .txt .yaml .yml"
+                )
+        if sum(len(c) for c in v.values()) > SCRIPT_MAX_TOTAL_CHARS:
+            raise ValueError(f"Tổng nội dung vượt {SCRIPT_MAX_TOTAL_CHARS // 1024} KB")
+        if not any(
+            n.endswith(".py") and (n.startswith("test_") or n.endswith("_test.py")) for n in v
+        ):
+            raise ValueError("Cần ít nhất một file test_*.py hoặc *_test.py")
+        return v
+
+
 TestDefinition = Annotated[
-    ApiTestDefinition | WebTestDefinition | AppTestDefinition, Field(discriminator="kind")
+    ApiTestDefinition | WebTestDefinition | AppTestDefinition | ScriptTestDefinition,
+    Field(discriminator="kind"),
 ]
 
 
-def has_side_effect(defn: ApiTestDefinition | WebTestDefinition | AppTestDefinition) -> bool:
-    """API có phương thức ghi (POST/PUT/PATCH/DELETE) được coi là có side effect."""
+def has_side_effect(
+    defn: ApiTestDefinition | WebTestDefinition | AppTestDefinition | ScriptTestDefinition,
+) -> bool:
+    """API có phương thức ghi (POST/PUT/PATCH/DELETE) được coi là có side effect.
+
+    Script code có thể làm bất cứ gì nên luôn tính là có side effect (không tự thử lại, cần xác nhận khi chạy).
+    """
     if isinstance(defn, ApiTestDefinition):
         return any(s.method not in SAFE_METHODS for s in defn.steps)
-    return False
+    return isinstance(defn, ScriptTestDefinition)

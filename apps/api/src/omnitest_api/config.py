@@ -47,6 +47,32 @@ class Settings(BaseSettings):
     ai_timeout_seconds: float = 60
     ai_max_output_tokens: int = 4096
 
+    # Sandbox chạy script code (pytest/Playwright) trong container Docker, tắt mặc định.
+    # Worker cần Docker CLI và quyền gọi Docker daemon (nên dùng máy chạy riêng, xem docs/sandbox.md).
+    sandbox_enabled: bool = False
+    sandbox_image: str = "omnitest-sandbox:latest"
+    sandbox_docker_bin: str = "docker"
+    sandbox_cpus: float = Field(default=1.0, gt=0, le=16)
+    sandbox_memory_mb: int = Field(default=1024, ge=128, le=16384)
+    sandbox_pids_limit: int = Field(default=256, ge=32, le=4096)
+    sandbox_tmpfs_mb: int = Field(default=512, ge=64, le=8192)
+    sandbox_max_output_bytes: int = 50 * 1024 * 1024
+    sandbox_proxy_network: str = "bridge"
+
+    def sandbox_settings(self) -> dict[str, object]:
+        return {
+            "enabled": self.sandbox_enabled,
+            "image": self.sandbox_image,
+            "docker_bin": self.sandbox_docker_bin,
+            "cpus": self.sandbox_cpus,
+            "memory_mb": self.sandbox_memory_mb,
+            "pids_limit": self.sandbox_pids_limit,
+            "tmpfs_mb": self.sandbox_tmpfs_mb,
+            "max_output_bytes": self.sandbox_max_output_bytes,
+            "max_artifact_bytes": self.max_artifact_bytes,
+            "proxy_network": self.sandbox_proxy_network,
+        }
+
     @field_validator("env")
     @classmethod
     def _check_env(cls, v: str) -> str:

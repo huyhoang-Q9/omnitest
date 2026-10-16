@@ -1,7 +1,8 @@
 """Thực thi một test run: đọc định nghĩa đã chụp lại, gọi adapter, lưu kết quả từng bước và bằng chứng.
 
 An toàn:
-- Worker chỉ chạy định nghĩa khai báo qua adapter; không exec/eval nội dung người dùng.
+- Worker chỉ chạy định nghĩa khai báo qua adapter; không exec/eval nội dung người dùng. Script code (nếu được
+  bật) chỉ chạy trong container sandbox Docker cô lập, không bao giờ trong tiến trình worker.
 - Secret chỉ được giải mã trong bộ nhớ của lần chạy, mọi log và chi tiết đều đã che.
 - Test có side effect không bao giờ tự retry.
 - Hủy: kiểm tra cờ cancel_requested giữa các bước; timeout cho từng test case.
@@ -37,6 +38,7 @@ from omnitest_api.models import (
     Artifact,
     Environment,
     EnvironmentVariable,
+    Project,
     RunStatus,
     StepResult,
     TestRun,
@@ -57,6 +59,12 @@ NO_RETRY_ERRORS = {
     "no_steps",
     "appium_unavailable",
     "appium_session",
+    "sandbox_disabled",
+    "script_disabled",
+    "sandbox_unavailable",
+    "sandbox_oom",
+    "sandbox_output_limit",
+    "no_tests",
 }
 COUNTER = {
     RunStatus.PASSED: "passed",
@@ -179,6 +187,12 @@ class RunExecutor:
                 policy = NetworkPolicy.from_environment(
                     env.base_url, env.allowed_hosts, env.allow_private_network
                 )
+                project = await db.get(Project, run.project_id)
+                # Cờ dự án được đọc lại lúc chạy: Admin tắt script code thì lần chạy đang chờ cũng bị chặn.
+                adapter_settings: dict[str, Any] = {
+                    "sandbox": self.settings.sandbox_settings(),
+                    "script_allowed": bool(project and project.script_enabled),
+                }
                 items = list(
                     await db.scalars(
                         select(TestRunItem)
@@ -193,7 +207,9 @@ class RunExecutor:
                         item.status = RunStatus.CANCELLED
                         item.finished_at = now()
                     else:
-                        await self._execute_item(db, run, item, env, variables, policy)
+                        await self._execute_item(
+                            db, run, item, env, variables, policy, adapter_settings
+                        )
                     setattr(run, COUNTER[item.status], getattr(run, COUNTER[item.status]) + 1)
                     run.heartbeat_at = now()
                     await db.commit()
@@ -230,6 +246,7 @@ class RunExecutor:
         env: Environment,
         base_vars: Variables,
         policy: NetworkPolicy,
+        adapter_settings: dict[str, Any] | None = None,
     ) -> None:
         item.status = RunStatus.RUNNING
         item.started_at = now()
@@ -278,6 +295,7 @@ class RunExecutor:
                 deadline=time.monotonic() + item.timeout_seconds,
                 is_cancelled=is_cancelled,
                 on_step=on_step,
+                settings=dict(adapter_settings or {}),
             )
             if adapter is None:
                 result = AdapterResult(

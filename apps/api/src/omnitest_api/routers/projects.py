@@ -139,6 +139,8 @@ async def update_project(
     changes = body.model_dump(exclude_unset=True, exclude_none=True)
     if "ai_enabled" in changes and not access.can(ProjectRole.ADMIN):
         raise HTTPException(403, "Chỉ Admin dự án được bật hoặc tắt AI cho dự án")
+    if "script_enabled" in changes and not access.can(ProjectRole.ADMIN):
+        raise HTTPException(403, "Chỉ Admin dự án được bật hoặc tắt script code cho dự án")
     for k, v in changes.items():
         setattr(access.project, k, v)
     audit.record(
@@ -152,6 +154,9 @@ async def update_project(
         details={
             "fields": sorted(changes),
             **({"ai_enabled": changes["ai_enabled"]} if "ai_enabled" in changes else {}),
+            **(
+                {"script_enabled": changes["script_enabled"]} if "script_enabled" in changes else {}
+            ),
         },
     )
     await db.commit()

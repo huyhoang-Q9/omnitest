@@ -9,6 +9,7 @@ dependencies = [
     "jsonschema>=4.23",
     "jsonpath-ng>=1.7",
     "playwright>=1.48",
+    "defusedxml>=0.7.1",
 ]
 
 [build-system]

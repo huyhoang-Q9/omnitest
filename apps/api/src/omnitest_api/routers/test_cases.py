@@ -51,6 +51,22 @@ from omnitest_api.services.test_cases import (
 router = APIRouter(tags=["test-cases"])
 
 
+def script_denied(access: ProjectAccess, *types: TestType | None) -> str | None:
+    """Script code là code chạy trên hạ tầng: chỉ Admin dự án tạo/sửa, và dự án phải bật script code."""
+    if TestType.SCRIPT not in types:
+        return None
+    if not access.can(ProjectRole.ADMIN):
+        return "Chỉ Admin dự án được tạo hoặc sửa test script code"
+    if not access.project.script_enabled:
+        return "Dự án chưa bật cho phép script code (Admin dự án bật trong trang chi tiết dự án)"
+    return None
+
+
+def require_script_access(access: ProjectAccess, *types: TestType | None) -> None:
+    if reason := script_denied(access, *types):
+        raise HTTPException(403, reason)
+
+
 def to_out(tc: TestCase) -> TestCaseOut:
     out = TestCaseOut.model_validate(tc)
     out.step_count = step_count(tc.definition)
@@ -142,6 +158,7 @@ async def create_test_case(
     access = await get_project_access(db, user, project_id)
     require_role(access, ProjectRole.MANAGER)
     require_writable(access)
+    require_script_access(access, body.test_type)
     tc = await _insert_case(db, access, user, body)
     audit.record(
         db,
@@ -234,6 +251,7 @@ async def update_test_case(
     require_writable(access)
     if tc.is_deleted:
         raise HTTPException(409, "Test case đã bị xóa, cần khôi phục trước khi sửa")
+    require_script_access(access, tc.test_type, body.test_type)
     if body.version != tc.version:
         raise HTTPException(
             409,
@@ -267,6 +285,7 @@ async def duplicate_test_case(
     src, access = await case_with_access(db, user, case_id)
     require_role(access, ProjectRole.MANAGER)
     require_writable(access)
+    require_script_access(access, src.test_type)
     body = TestCaseCreate.model_validate(
         {
             "title": f"{src.title} (bản sao)"[:300],
@@ -440,6 +459,11 @@ async def import_test_cases(
                     ImportRowError(row=i, message=f"Không có test case mã {code} trong dự án")
                 )
                 continue
+        if reason := script_denied(
+            access, data_row.test_type, target.test_type if target else None
+        ):
+            errors.append(ImportRowError(row=i, message=reason))
+            continue
         parsed.append((target, data_row))
 
     created = sum(1 for t, _ in parsed if t is None)

@@ -111,6 +111,7 @@ class ProjectUpdate(BaseModel):
     description: Annotated[str, StringConstraints(max_length=5000)] | None = None
     # Chỉ Admin dự án được đổi.
     ai_enabled: bool | None = None
+    script_enabled: bool | None = None
 
 
 class ProjectOut(ORM):
@@ -120,6 +121,7 @@ class ProjectOut(ORM):
     description: str
     is_archived: bool
     ai_enabled: bool = False
+    script_enabled: bool = False
     created_at: datetime
     updated_at: datetime
     my_role: ProjectRole | None = None

@@ -131,7 +131,9 @@ function TestCaseEditor({ tc, projectId, project }: { tc: TestCase | undefined; 
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
   const role = project?.my_role;
-  const canEdit = can(role, "manager") && !project?.is_archived && !tc?.is_deleted;
+  // Script code là code chạy trên hạ tầng: chỉ Admin dự án, và dự án phải bật script code.
+  const scriptAllowed = !!project?.script_enabled && can(role, "admin");
+  const canEdit = can(role, "manager") && !project?.is_archived && !tc?.is_deleted && (tc?.test_type !== "script" || scriptAllowed);
 
   const save = useMutation({
     mutationFn: () => {
@@ -277,9 +279,11 @@ function TestCaseEditor({ tc, projectId, project }: { tc: TestCase | undefined; 
                       setFormKey((k) => k + 1);
                     }}
                   >
-                    {Object.entries(TEST_TYPE_LABEL).map(([k, v]) => (
-                      <option key={k} value={k}>{v}</option>
-                    ))}
+                    {Object.entries(TEST_TYPE_LABEL)
+                      .filter(([k]) => k !== "script" || scriptAllowed || form.test_type === "script")
+                      .map(([k, v]) => (
+                        <option key={k} value={k}>{v}</option>
+                      ))}
                   </NativeSelect>
                 </FormField>
                 <FormField id="tc-priority" label="Mức ưu tiên">
@@ -316,9 +320,11 @@ function TestCaseEditor({ tc, projectId, project }: { tc: TestCase | undefined; 
 
           <Card>
             <CardHeader>
-              <CardTitle>Các bước</CardTitle>
+              <CardTitle>{form.test_type === "script" ? "Script" : "Các bước"}</CardTitle>
               <CardDescription>
-                Dùng {"{{TEN_BIEN}}"} để lấy biến của môi trường hoặc giá trị lấy ở bước trước. Secret được che trong mọi log và kết quả.
+                {form.test_type === "script"
+                  ? "Mỗi hàm test_* là một bước trong kết quả. Secret được che trong log và kết quả."
+                  : <>Dùng {"{{TEN_BIEN}}"} để lấy biến của môi trường hoặc giá trị lấy ở bước trước. Secret được che trong mọi log và kết quả.</>}
               </CardDescription>
             </CardHeader>
             <CardContent>

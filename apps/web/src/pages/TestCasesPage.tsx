@@ -313,7 +313,9 @@ export function TestCasesPage() {
                               {tc.is_deleted && <Badge variant="danger">Đã xóa</Badge>}
                               {tc.side_effect && <Badge variant="warning">Thay đổi dữ liệu</Badge>}
                               {!RUNNABLE_TYPES.includes(tc.test_type) && (
-                                <Badge variant="muted">{tc.step_count === 0 ? "Chưa có bước tự động" : "Thử nghiệm (Appium)"}</Badge>
+                                <Badge variant="muted">
+                                  {tc.test_type === "script" ? "Sandbox" : tc.step_count === 0 ? "Chưa có bước tự động" : "Thử nghiệm (Appium)"}
+                                </Badge>
                               )}
                               {tc.tags.map((t) => (
                                 <Badge key={t} variant="outline">{t}</Badge>
@@ -321,7 +323,7 @@ export function TestCasesPage() {
                             </div>
                           </TD>
                           <TD className="hidden md:table-cell">
-                            {TEST_TYPE_LABEL[tc.test_type]} · {tc.step_count} bước
+                            {TEST_TYPE_LABEL[tc.test_type]} · {tc.step_count} {tc.test_type === "script" ? "file" : "bước"}
                           </TD>
                           <TD className="hidden lg:table-cell">{PRIORITY_LABEL[tc.priority]}</TD>
                           <TD className="hidden lg:table-cell">{CASE_STATUS_LABEL[tc.status]}</TD>

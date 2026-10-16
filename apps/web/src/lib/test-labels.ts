@@ -7,6 +7,7 @@ export const TEST_TYPE_LABEL: Record<TestType, string> = {
   desktop_windows: "Desktop Windows",
   mobile_android: "Mobile Android",
   mobile_ios: "Mobile iOS",
+  script: "Script code (pytest)",
 };
 
 /** Loại test có adapter ổn định. Desktop/Mobile chạy qua Appium ở mức thử nghiệm (xem APP_TYPES). */

@@ -15,6 +15,25 @@ export function hasInvalidJson(v: unknown): boolean {
   return false;
 }
 
+export const SCRIPT_TEMPLATE = `import os
+
+import httpx
+
+BASE_URL = os.environ["OMNITEST_BASE_URL"]
+
+
+def test_trang_chu_tra_200():
+    # Cần chọn "Mạng: qua proxy của môi trường" để gọi được hệ thống đích.
+    r = httpx.get(BASE_URL, timeout=10)
+    assert r.status_code == 200
+
+
+# Playwright: dùng fixture page; base_url lấy từ Base URL của môi trường.
+# def test_tieu_de(page):
+#     page.goto("/")
+#     assert "Kho hàng" in page.title()
+`;
+
 export function defaultDefinition(type: TestType): Definition {
   if (type === "api")
     return { kind: "api", steps: [{ name: "Bước 1", method: "GET", url: "/", assertions: [{ type: "status", equals: 200 }] }] };
@@ -26,6 +45,7 @@ export function defaultDefinition(type: TestType): Definition {
       trace: "on_failure",
       steps: [{ name: "Mở trang", action: "goto", value: "/" }],
     };
+  if (type === "script") return { kind: "script", runner: "pytest", network: "none", files: { "test_main.py": SCRIPT_TEMPLATE } };
   return { kind: type, notes: "", capabilities: {}, steps: [] };
 }
 

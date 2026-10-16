@@ -72,5 +72,9 @@ def record_version(
 
 
 def step_count(definition: dict[str, Any]) -> int:
+    """Số bước; với script code là số file."""
+    if definition.get("kind") == "script":
+        files = definition.get("files")
+        return len(files) if isinstance(files, dict) else 0
     steps = definition.get("steps")
     return len(steps) if isinstance(steps, list) else 0

@@ -11,6 +11,7 @@ Hỗ trợ CONNECT (HTTPS, WebSocket bảo mật) và HTTP thường (mỗi kế
 import asyncio
 import contextlib
 import logging
+from collections.abc import Callable
 from urllib.parse import urlsplit
 
 from omnitest_adapters.core.network import (
@@ -28,8 +29,19 @@ BLOCKED_HEADER = "x-omnitest-egress-blocked"
 
 
 class EgressProxy:
-    def __init__(self, policy: NetworkPolicy) -> None:
+    """unix_path: nghe trên Unix socket thay vì TCP loopback (dùng cho sandbox script code không có mạng).
+    on_block: gọi mỗi khi chặn một kết nối, để ghi nhận ngay (VD in ra log của container proxy).
+    """
+
+    def __init__(
+        self,
+        policy: NetworkPolicy,
+        unix_path: str | None = None,
+        on_block: Callable[[str], None] | None = None,
+    ) -> None:
         self.policy = policy
+        self.unix_path = unix_path
+        self.on_block = on_block
         # Mọi kết nối bị chặn (gồm cả lưu lượng nền của trình duyệt), dạng "đích: lý do".
         self.blocked: list[str] = []
         self._server: asyncio.Server | None = None
@@ -42,7 +54,10 @@ class EgressProxy:
         return f"http://{host}:{port}"
 
     async def __aenter__(self) -> "EgressProxy":
-        self._server = await asyncio.start_server(self._handle, "127.0.0.1", 0)
+        if self.unix_path:
+            self._server = await asyncio.start_unix_server(self._handle, self.unix_path)
+        else:
+            self._server = await asyncio.start_server(self._handle, "127.0.0.1", 0)
         return self
 
     async def __aexit__(self, *exc: object) -> None:
@@ -134,6 +149,8 @@ class EgressProxy:
         if isinstance(exc, BlockedTargetError):
             msg = str(exc)
             self.blocked.append(f"{target}: {msg}")
+            if self.on_block:
+                self.on_block(f"{target}: {msg}")
             log.info("Proxy chặn kết nối tới %s", target)
             status, extra = b"403 Forbidden", BLOCKED_HEADER.encode() + b": 1\r\n"
         else:

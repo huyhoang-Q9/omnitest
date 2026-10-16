@@ -4991,6 +4991,11 @@
             "title": "Ai Enabled",
             "default": false
           },
+          "script_enabled": {
+            "type": "boolean",
+            "title": "Script Enabled",
+            "default": false
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -5176,6 +5181,17 @@
               }
             ],
             "title": "Ai Enabled"
+          },
+          "script_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Script Enabled"
           }
         },
         "type": "object",
@@ -5966,6 +5982,51 @@
         ],
         "title": "RunStatus"
       },
+      "ScriptTestDefinition": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "script",
+            "title": "Kind"
+          },
+          "runner": {
+            "type": "string",
+            "const": "pytest",
+            "title": "Runner",
+            "default": "pytest"
+          },
+          "files": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Files"
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "none",
+              "environment"
+            ],
+            "title": "Network",
+            "default": "none"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 10000,
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "files"
+        ],
+        "title": "ScriptTestDefinition",
+        "description": "Script pytest do người dùng viết, chỉ chạy trong container sandbox (không chạy trên máy chủ chính).\n\nfiles: tên file (phẳng, không thư mục con) -> nội dung. Cần ít nhất một file test_*.py hoặc *_test.py.\nnetwork: \"none\" (mặc định) không có mạng; \"environment\" chỉ ra ngoài qua proxy kiểm soát theo môi trường."
+      },
       "StatusCounts": {
         "properties": {
           "passed": {
@@ -6409,6 +6470,9 @@
               },
               {
                 "$ref": "#/components/schemas/AppTestDefinition"
+              },
+              {
+                "$ref": "#/components/schemas/ScriptTestDefinition"
               }
             ],
             "title": "Definition",
@@ -6420,6 +6484,7 @@
                 "desktop_windows": "#/components/schemas/AppTestDefinition",
                 "mobile_android": "#/components/schemas/AppTestDefinition",
                 "mobile_ios": "#/components/schemas/AppTestDefinition",
+                "script": "#/components/schemas/ScriptTestDefinition",
                 "web": "#/components/schemas/WebTestDefinition"
               }
             }
@@ -6800,6 +6865,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/AppTestDefinition"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ScriptTestDefinition"
                   }
                 ],
                 "discriminator": {
@@ -6810,6 +6878,7 @@
                     "desktop_windows": "#/components/schemas/AppTestDefinition",
                     "mobile_android": "#/components/schemas/AppTestDefinition",
                     "mobile_ios": "#/components/schemas/AppTestDefinition",
+                    "script": "#/components/schemas/ScriptTestDefinition",
                     "web": "#/components/schemas/WebTestDefinition"
                   }
                 }
@@ -6928,7 +6997,8 @@
           "desktop_macos",
           "desktop_windows",
           "mobile_android",
-          "mobile_ios"
+          "mobile_ios",
+          "script"
         ],
         "title": "TestType"
       },

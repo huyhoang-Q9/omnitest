@@ -27,4 +27,10 @@ describe("định nghĩa test", () => {
     expect(defaultDefinition("web").kind).toBe("web");
     expect(defaultDefinition("desktop_macos")).toEqual({ kind: "desktop_macos", notes: "", capabilities: {}, steps: [] });
   });
+
+  it("script mặc định không có mạng và có file test", () => {
+    const def = defaultDefinition("script");
+    expect(def.network).toBe("none");
+    expect(Object.keys(def.files as object)).toEqual(["test_main.py"]);
+  });
 });

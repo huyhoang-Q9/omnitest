@@ -5,6 +5,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse
+from omnitest_adapters.core.base import EnvironmentCheck
 from omnitest_adapters.registry import default_registry
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,6 +34,7 @@ from omnitest_api.models import (
     TestRun,
     TestRunItem,
     TestSuite,
+    TestType,
     User,
 )
 from omnitest_api.queue import enqueue_run
@@ -72,8 +74,11 @@ async def run_with_access(
 @router.get("/api/adapters", response_model=list[AdapterOut])
 async def list_adapters(_: CurrentUser) -> list[AdapterOut]:
     out = []
+    sandbox_on = get_settings().sandbox_enabled
     for a in default_registry().all():
         check = a.check_environment()
+        if "script" in a.test_kinds and not sandbox_on:
+            check = EnvironmentCheck(False, "Máy chủ chưa bật sandbox chạy script code")
         out.append(
             AdapterOut(
                 key=a.key,
@@ -135,6 +140,11 @@ async def create_run(
     if env.requires_run_confirmation:
         reasons.append(
             f"Môi trường {env.name} ({env.kind.value.upper()}) yêu cầu xác nhận trước khi chạy"
+        )
+    scripts = [tc.code for tc in cases if tc.test_type == TestType.SCRIPT]
+    if scripts:
+        reasons.append(
+            f"{len(scripts)} test script code sẽ chạy trong sandbox Docker: {', '.join(scripts[:10])}"
         )
     side = [tc.code for tc in cases if tc.side_effect]
     if side:
@@ -199,6 +209,7 @@ async def create_run(
             "environment": env.name,
             "environment_kind": env.kind.value,
             "count": len(cases),
+            "script_count": len(scripts),
             "confirmed": bool(reasons),
         },
     )
